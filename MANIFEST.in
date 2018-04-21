@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include ibtcustom *.css
+recursive-include ibtcustom *.csv
+recursive-include ibtcustom *.html
+recursive-include ibtcustom *.ico
+recursive-include ibtcustom *.js
+recursive-include ibtcustom *.json
+recursive-include ibtcustom *.md
+recursive-include ibtcustom *.png
+recursive-include ibtcustom *.py
+recursive-include ibtcustom *.svg
+recursive-include ibtcustom *.txt
+recursive-exclude ibtcustom *.pyc
