@@ -23,11 +23,9 @@ app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 # include js, css files in header of web template
 # web_include_css = "/assets/ibtcustom/css/ibtcustom.css"
 # web_include_js = "/assets/ibtcustom/js/ibtcustom.js"
-web_include_js = "/assets/ibtcustom/js/ibtcustom.js"
 
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
-page_js = {"modules" : "/assets/ibtcustom/js/ibtcustom.js"}
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
@@ -124,6 +122,8 @@ page_js = {"modules" : "/assets/ibtcustom/js/ibtcustom.js"}
 # 	"frappe.desk.doctype.event.event.get_events": "ibtcustom.event.get_events"
 # }
 
+email_append_to = ["HR Issue", "Admin Issue"]
+
 
 doc_events = {
 	"Sales Order": {
@@ -131,23 +131,42 @@ doc_events = {
 		"on_cancel": "ibtcustom.api.so_on_cancel"	
 	},
 	"Quotation": {
-		"on_submit": "ibtcustom.api.op_on_submit",
-		"on_cancel": "ibtcustom.api.op_on_cancel"	
+		"on_submit": "ibtcustom.api.qt_on_submit",
+		"on_cancel": "ibtcustom.api.qt_on_cancel",
+		"on_update_after_submit": "ibtcustom.api.qt_on_update"
 	},
 	"Auto Email Report": {
 		"before_insert": "ibtcustom.api.override_validate"
+	},
+	"Opportunity": {
+		"before_save": "ibtcustom.api.opp_before_save"
+	},
+	"Lead": {
+		"on_update": "ibtcustom.api.update_lead_owner"
+	},
+	"Employee Handover": {
+		"on_submit": "ibtcustom.api.er_on_submit",
+		"on_cancel": "ibtcustom.api.er_on_cancel"
+	},
+	"Salary Slip": {
+		"before_save": "ibtcustom.api.sl_before_save"
+	},	
+	"Employee Loan Application" : {
+		"validate": "ibtcustom.api.ela_validate"
 	}
 }
 
 scheduler_events = {
-	"weekly": [
-		"ibtcustom.api.sales_invoice_mails",
-		"ibtcustom.api.weekly_reports"
-	],
 	"daily": [
 		"ibtcustom.api.employee_birthday_mails",
 		"ibtcustom.api.daily_task_report",
-		"ibtcustom.api.make_todo"
+		"ibtcustom.api.make_todo",
+		"ibtcustom.api.update_issue_status",
+		"ibtcustom.api.disable_customer"
+	],
+	"weekly": [
+		"ibtcustom.api.sales_invoice_mails",
+		"ibtcustom.api.weekly_reports"
 	],
 	"hourly": [
 		"ibtcustom.api.change_email_status"
