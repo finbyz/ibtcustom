@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import frappe
 from frappe import _, sendmail, db
-from frappe.utils import nowdate, add_days, getdate, get_time
+from frappe.utils import nowdate, add_days, getdate, get_time, add_months
 from frappe.core.doctype.communication.email import make
 from frappe.utils.background_jobs import enqueue
 from email.utils import formataddr
@@ -804,7 +804,7 @@ def sl_before_save(self,method):
 def update_issue_status():
 	doctype = ["HR Issue", "Admin Issue"]
 
-	for db in doctype:
+	for d in doctype:
 		data = db.sql("""
 			SELECT
 				name
@@ -812,10 +812,10 @@ def update_issue_status():
 				`tab%s`
 			WHERE
 				status = "Open"
-				and due_date < CURDATE() """ % db , as_dict=1)
+				and due_date < CURDATE() """ % d , as_dict=1)
 
 		for row in data:
-			issue = frappe.get_doc(db, row.name)
+			issue = frappe.get_doc(d, row.name)
 			issue.status = "Overdue"
 			issue.save()
 
@@ -886,7 +886,7 @@ def set_customer_disable():
 		FROM
 			`tabSales Order`
 		WHERE
-			po_date BETWEEN DATE_SUB(NOW(), INTERVAL 90 DAY) AND NOW()""", as_dict=1)
+			transaction_date BETWEEN DATE_SUB(NOW(), INTERVAL 90 DAY) AND NOW()""", as_dict=1)
 
 	customers = tuple(d.customer for d in data)
 
@@ -897,20 +897,116 @@ def set_customer_disable():
 			`tabCustomer`
 		WHERE
 			disabled = 0
+			and creation NOT BETWEEN DATE_SUB(NOW(), INTERVAL 90 DAY) AND NOW()
 			and name not in (%s) """ % ', '.join(['%s'] * len(customers)), customers, as_dict=1)
 
 	for row in customer:
 		cust = frappe.get_doc("Customer", row.name)
-		cust.disabled = 1
-		cust.save()
+		cust.db_set('disabled', 1)
+
+@frappe.whitelist()
+def daily_leave_allocation():
+	emp =  db.get_list("Employee", 
+			filters= {
+				"probation_end_date": nowdate(), 
+				'status': 'Active'
+			}, 
+			fields = ("name","date_of_joining","probation_end_date"))
+
+	for e in emp:
+		leave = frappe.new_doc("Leave Allocation")
+		leave.employee = e.name
+		leave.leave_type = "Flexible Leave"
+		leave.from_date = nowdate()
+		leave.to_date = str(getdate().year) + '-12-31'
+		if e.date_of_joining.year < getdate().year:
+			leave.new_leaves_allocated = 12
+		else:
+			leave.new_leaves_allocated = 12 - e.date_of_joining.month
+		leave.carry_forward = 0
+		leave.insert()
+		leave.save()
 		db.commit()
-		
-def asset_type_filter(doctype, txt, searchfield, start, page_len, filters, as_dict=False):
-	return db.sql("""
-			select 
-				asset_type 
-			from 
-				`tabCompany Asset`
-			where
-				in_possession_with = "Company"
-		""")
+
+	emp = db.sql("""
+		SELECT
+			name
+		FROM
+			tabEmployee
+		WHERE
+			CURDATE() = DATE_ADD(date_of_joining, INTERVAL 1 YEAR)
+			and status = 'Active' """, as_dict=1)
+
+	for e in emp:
+		leave = frappe.new_doc("Leave Allocation")
+		leave.employee = e.name
+		leave.leave_type = "Annual Leave"
+		leave.from_date = nowdate()
+		leave.to_date = add_date(add_months(nowdate(), 2), -1)
+		leave.carry_forward = 0
+		leave.new_leaves_allocated = 30
+		leave.insert()
+		leave.save()
+		db.commit()
+
+@frappe.whitelist()
+def monthly_leave_allocation():
+	emp = db.get_list("Employee", 
+			filters= {
+				"probation_end_date": ["<=", nowdate()], 
+				'status': 'Active'
+			}, 
+			fields = "name")
+	
+	for e in emp:
+		leave = frappe.new_doc("Leave Allocation")
+		leave.employee = e.name
+		leave.leave_type = "Flexible Leave"
+		leave.from_date = nowdate()
+		leave.to_date = add_date(add_months(nowdate(), 1), -1)
+		leave.carry_forward = 0
+		leave.new_leaves_allocated = 1
+		leave.insert()
+		leave.save()
+		db.commit()
+
+@frappe.whitelist()
+def yearly_leave_allocation():
+	emp = db.get_list("Employee", 
+			filters= {
+				"probation_end_date": ["<=", nowdate()], 
+				'status': 'Active',
+				'branch' : 'Headquarters, Dubai, United Arab Emirates'
+			}, 
+			fields = "name")
+	
+	for e in emp:
+		leave = frappe.new_doc("Leave Allocation")
+		leave.employee = e.name
+		leave.leave_type = "Annual Leave"
+		leave.from_date = nowdate()
+		leave.to_date = add_days(add_months(nowdate(), 11), 30)
+		leave.carry_forward = 0
+		leave.new_leaves_allocated = 30
+		leave.insert()
+		leave.save()
+		db.commit()
+
+	emp = db.get_list("Employee", 
+			filters= {
+				"probation_end_date": ["<=", nowdate()], 
+				'status': 'Active',
+			}, 
+			fields = "name")
+	
+	for e in emp:
+		leave = frappe.new_doc("Leave Allocation")
+		leave.employee = e.name
+		leave.leave_type = "Flexible Leave"
+		leave.from_date = nowdate()
+		leave.to_date = add_days(add_months(nowdate(), 11), 30)
+		leave.carry_forward = 0
+		leave.new_leaves_allocated = 12
+		leave.insert()
+		leave.save()
+		db.commit()

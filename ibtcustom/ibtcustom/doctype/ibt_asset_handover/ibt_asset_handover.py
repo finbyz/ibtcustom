@@ -10,28 +10,24 @@ from frappe.model.mapper import get_mapped_doc
 
 class IBTAssetHandover(Document):
 	
-	def validate(self):
-		self.update_doc_status()
+	# def validate(self):
+	# 	self.update_doc_status()
 
-	def update_doc_status(self):
-		if not self.asset_request_ref:
-			frappe.throw(_("Please set Asset Request Ref"))
-			validated = False
-		else:
-			frappe.db.set_value("IBT Asset Request", self.asset_request_ref, 'status', self.status)
-			frappe.db.set_value("IBT Asset Request", self.asset_request_ref, 'workflow_state', self.status)
+	# def update_doc_status(self):
+	# 	if not self.asset_request_ref:
+	# 		frappe.throw(_("Please set Asset Request Ref"))
+	# 		validated = False
+	# 	else:
+	# 		frappe.db.set_value("IBT Asset Request", self.asset_request_ref, 'status', self.status)
+	# 		frappe.db.set_value("IBT Asset Request", self.asset_request_ref, 'workflow_state', self.status)
 
 	def on_submit(self):
 		if self.status == "Acknowledged":
-
-			company_asset = frappe.new_doc("Company Asset")
-			company_asset.date = self.date
-			company_asset.in_possesion_with = "Employee"
+			company_asset = frappe.get_doc("Company Asset",self.asset_number)
+			company_asset.handover_date = self.date
+			company_asset.in_possession_with = "Employee"
 			company_asset.employee = self.employee
 			company_asset.employee_name = self.employee_name
-			company_asset.asset_type = self.asset_name
-			company_asset.asset_number = self.asset_number
-			company_asset.details = self.details
 			company_asset.save(ignore_permissions=True)
 			db.commit()
 

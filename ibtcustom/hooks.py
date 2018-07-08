@@ -157,18 +157,24 @@ doc_events = {
 }
 
 scheduler_events = {
+	"hourly": [
+		"ibtcustom.api.change_email_status"
+	],
 	"daily": [
 		"ibtcustom.api.employee_birthday_mails",
 		"ibtcustom.api.daily_task_report",
 		"ibtcustom.api.make_todo",
 		"ibtcustom.api.update_issue_status",
-		"ibtcustom.api.disable_customer"
+		"ibtcustom.api.daily_leave_allocation"
 	],
 	"weekly": [
 		"ibtcustom.api.sales_invoice_mails",
 		"ibtcustom.api.weekly_reports"
 	],
-	"hourly": [
-		"ibtcustom.api.change_email_status"
+	"monthly": [
+		"ibtcustom.api.monthly_leave_allocation"
+	],	
+	"yearly": [
+		"ibtcustom.api.yearly_leave_allocation"
 	]
 }
