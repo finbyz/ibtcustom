@@ -122,6 +122,10 @@ app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 # 	"frappe.desk.doctype.event.event.get_events": "ibtcustom.event.get_events"
 # }
 
+override_whitelisted_methods = {
+	"frappe.utils.print_format.download_pdf": "ibtcustom.print_format.download_pdf",
+}
+
 email_append_to = ["HR Issue", "Admin Issue"]
 
 
@@ -153,6 +157,16 @@ doc_events = {
 	},	
 	"Employee Loan Application" : {
 		"validate": "ibtcustom.api.ela_validate"
+	},
+	"Project":{
+		"before_save":"ibtcustom.api.project_before_save"
+	},
+	"Purchase Order": {
+		"on_submit": "ibtcustom.api.po_on_submit",
+		"after_cancel": "ibtcustom.api.po_on_cancel"
+	},
+	"Issue":{
+		"before_save":"ibtcustom.api.issue_before_save"
 	}
 }
 
@@ -162,9 +176,11 @@ scheduler_events = {
 	],
 	"daily": [
 		"ibtcustom.api.employee_birthday_mails",
+		"ibtcustom.api.employee_anniversary_mails",
 		"ibtcustom.api.daily_task_report",
 		"ibtcustom.api.make_todo",
 		"ibtcustom.api.update_issue_status",
+		"ibtcustom.api.disable_customer",
 		"ibtcustom.api.daily_leave_allocation"
 	],
 	"weekly": [

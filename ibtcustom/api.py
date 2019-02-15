@@ -24,6 +24,14 @@ def so_on_submit(self, method):
 	update_op_status(self, method)
 
 @frappe.whitelist()
+def po_on_submit(self, method):
+	update_order_date(self, method)
+
+@frappe.whitelist()
+def po_on_cancel(self, method):
+	update_order_date(self, method)
+
+@frappe.whitelist()
 def so_on_cancel(self, method):
 	cancel_did(self, method)
 	cancel_op_status(self, method)
@@ -47,6 +55,45 @@ def update_lead_owner(self,method):
 		self.lead_owner = self.contact_by
 		self.save(ignore_permissions=True)
 		frappe.db.commit()
+
+def update_order_date(self, method):
+	if self.get('items'):
+		if self.items[0].get('material_request'):
+			mr = frappe.get_doc("Material Request", self.items[0].material_request)
+			
+			if method == 'on_submit':
+				mr.last_ordered_date = self.transaction_date
+				if not mr.ordered_date:
+					mr.ordered_date = self.transaction_date
+
+			mr.save(ignore_permissions=True)
+			frappe.db.commit()
+			
+@frappe.whitelist()
+def po_cancel(docname):
+	so = frappe.get_doc("Purchase Order",docname)
+	if so.get('items'):
+		if so.items[0].get('material_request'):
+			mr = frappe.get_doc("Material Request", so.items[0].material_request)
+			
+	data = frappe.db.sql("""
+					select 
+						DATE(po.transaction_date)
+					from 
+						`tabPurchase Order` as po join `tabPurchase Order Item` as poi on( po.name = poi.parent)
+					where 
+						poi.material_request = '%s' and po.docstatus = 1
+					order by
+						po.modified desc
+				"""% mr.name)
+	
+	if not data:
+		mr.ordered_date = ''
+		mr.last_ordered_date = ''
+	else:
+		mr.last_ordered_date = data[0][0]
+	mr.save(ignore_permissions=True)
+	frappe.db.commit()
 
 def update_op_lead_status(self):
 	opp = frappe.get_doc("Opportunity", self.opportunity)
@@ -110,6 +157,19 @@ def cancel_op(self, method):
 		op.db_set('grand_total', grand_total)
 		if grand_total == 0.0:
 			op.db_set('status', "Open")
+			
+@frappe.whitelist()		
+def project_before_save(self, method):
+	set_progress(self)
+
+def set_progress(self):
+	for row in self.tasks:
+		if row.status == "Closed":
+			frappe.db.set_value("Task", row.task_id, 'progress', 100.0)
+		elif row.status == "Open":
+			frappe.db.set_value("Task", row.task_id, 'progress', 0.0)
+
+	self.run_method('update_percent_complete')
 
 @frappe.whitelist()
 def sales_invoice_mails():
@@ -260,6 +320,33 @@ def send_employee_birthday_mails():
 				cc = ['team@ibtevolve.com'],
 				subject = 'Happy Birthday ' + row.employee_name,
 				message = message)
+
+# anniversary mails
+@frappe.whitelist()
+def employee_anniversary_mails():
+	enqueue(send_employee_anniversary_mails, queue='long', timeout=2000)
+
+@frappe.whitelist()
+def send_employee_anniversary_mails():
+	data = db.sql("""
+		SELECT
+			employee_name, company_email, DATE_FORMAT(CURDATE(),'%y') - DATE_FORMAT(date_of_joining,'%y') as diff 
+		FROM
+			`tabEmployee`
+		WHERE
+			status = 'Active' 
+			and DATE_FORMAT(date_of_joining,'%m-%d') = DATE_FORMAT(CURDATE(),'%m-%d') """, as_dict=1)
+
+	message = """<p>Dear {},</p>
+				<p>Congratutions on completing {} years with IBT.</p>
+				<img src='/files/Work-aniversary1000X1000_NEW.jpg' height='40%' width='70%'>
+				"""
+	for row in data:
+		recipients = [row.company_email]
+		sendmail(recipients = recipients,
+				cc = ['team@ibtevolve.com'],
+				subject = 'Happy Work Anniversary - ' + row.employee_name,
+				message = message.format(row.employee_name, int(row.diff)))
 
 @frappe.whitelist()
 def daily_task_report():
@@ -684,7 +771,9 @@ def set_due_date(self):
 	i=0
 	if due_date in holiday_list:
 		due_days+=1
-		
+	elif due_date.weekday() == 5:
+			due_days += 1
+			
 	opening_time = get_time(self.opening_time)	
 	if self.issue_level == 'Remote Support Team':
 		hour = int(opening_time.strftime('%H'))
@@ -711,10 +800,13 @@ def set_due_date(self):
 	while i<due_days:
 		i+=1
 		due_date= add_days(due_date,1)
-		if due_date in holiday_list:
-			due_days+=1	
-	self.db_set('due_date', due_date)
-
+		if due_date.weekday() == 5:
+				due_days += 1
+		elif due_date in holiday_list:
+			due_days+=1
+			
+	self.due_date = due_date
+	frappe.db.commit()
 
 @frappe.whitelist()
 def er_on_submit(self, method):
@@ -897,8 +989,7 @@ def set_customer_disable():
 			`tabCustomer`
 		WHERE
 			disabled = 0
-			and creation NOT BETWEEN DATE_SUB(NOW(), INTERVAL 90 DAY) AND NOW()
-			and name not in (%s) """ % ', '.join(['%s'] * len(customers)), customers, as_dict=1)
+			and creation BETWEEN DATE_SUB(NOW(), DATEADD(day,-90,NOW())) and name not in (%s) """ % ', '.join(['%s'] * len(customers)), customers, as_dict=1)
 
 	for row in customer:
 		cust = frappe.get_doc("Customer", row.name)
@@ -926,6 +1017,7 @@ def daily_leave_allocation():
 		leave.carry_forward = 0
 		leave.insert()
 		leave.save()
+		leave.submit()
 		db.commit()
 
 	emp = db.sql("""
@@ -947,6 +1039,7 @@ def daily_leave_allocation():
 		leave.new_leaves_allocated = 30
 		leave.insert()
 		leave.save()
+		leave.submit()
 		db.commit()
 
 @frappe.whitelist()
@@ -968,6 +1061,7 @@ def monthly_leave_allocation():
 		leave.new_leaves_allocated = 1
 		leave.insert()
 		leave.save()
+		leave.submit()
 		db.commit()
 
 @frappe.whitelist()
@@ -990,6 +1084,7 @@ def yearly_leave_allocation():
 		leave.new_leaves_allocated = 30
 		leave.insert()
 		leave.save()
+		leave.submit()
 		db.commit()
 
 	emp = db.get_list("Employee", 
@@ -1009,4 +1104,12 @@ def yearly_leave_allocation():
 		leave.new_leaves_allocated = 12
 		leave.insert()
 		leave.save()
+		leave.submit()
 		db.commit()
+
+@frappe.whitelist()
+def get_sales_owner(sales_manager):
+	emp = frappe.db.get_value("Sales Person", sales_manager, "employee")
+	emp_details = frappe.db.get_value("Employee", emp, ["user_id", "employee_name"])
+
+	return emp_details
