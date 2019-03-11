@@ -17,7 +17,7 @@ def override_validate(self, method):
 def validate(self):
 	self.validate_emails()
 	self.validate_report_format()
-
+	
 @frappe.whitelist()
 def so_on_submit(self, method):
 	update_did(self, method)
