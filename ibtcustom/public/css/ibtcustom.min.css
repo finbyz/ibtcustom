@@ -1,8 +1,8 @@
 .dropdown-menu .input-group{ display: none }
-.dropdown-help li:last-child {
+.dropdown-help li:nth-last-child(2) {
     display: none;
 }
-.dropdown-help li:nth-child(-n+7)
+.dropdown-help li:nth-child(-n+5)
 {
 	display:none;
 }
