@@ -12,7 +12,7 @@ from frappe.utils import getdate
 
 def get_period_date_ranges(period, fiscal_year=None, year_start_date=None):
 	from dateutil.relativedelta import relativedelta
-	year_start_date= datetime.date(2018,01,01)
+	year_start_date= datetime.date(2018, 1, 1)
 	year_end_date = frappe.db.get_value("Fiscal Year",fiscal_year, ["year_end_date"])
 	#if not year_start_date:
 	#	year_start_date, year_end_date = frappe.db.get_value("Fiscal Year",

@@ -194,3 +194,7 @@ scheduler_events = {
 		"ibtcustom.api.yearly_leave_allocation"
 	]
 }
+
+doctype_list_js = {
+        "Opportunity": "/public/js/controllers/list/opportunity_list.js"
+}
