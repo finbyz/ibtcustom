@@ -13,6 +13,11 @@ app_license = "GPL 3"
 
 # Includes in <head>
 # ------------------
+app_logo_url = '/files/axiraerp-icon.svg'
+
+website_context = {
+	"splash_image": "/files/axira-splash.png"
+}
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/ibtcustom/css/ibtcustom.css"
