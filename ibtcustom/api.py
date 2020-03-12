@@ -199,7 +199,7 @@ def load_tasks(self):
 	"""Load `tasks` from the database"""
 	project_task_custom_fields = frappe.get_all("Custom Field", {"dt": "Project Task"}, "fieldname")
 
-	self.tasks = []
+	self.project_tasks = []
 	for task in get_tasks(self):
 		task_map = {
 			"title": task.subject,
