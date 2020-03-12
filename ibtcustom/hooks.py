@@ -174,9 +174,6 @@ doc_events = {
 		"onload": "ibtcustom.api.project_onload",
 		"on_update": "ibtcustom.api.project_on_update"
 	},
-	"Task": {
-		'validate': "ibtcustom.api.task_validate"
-	},
 	"Purchase Order": {
 		"on_submit": "ibtcustom.api.po_on_submit",
 		"after_cancel": "ibtcustom.api.po_on_cancel"

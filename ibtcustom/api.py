@@ -299,24 +299,9 @@ def get_tasks(self):
 
 		return frappe.get_all("Task", "*", filters, order_by="exp_start_date asc, status asc")
 
-def task_validate(self,method):
-	pass
-	#add_task_child(self)
-
-def add_task_child(self):
-	if self.project:
-		project = frappe.get_doc("Project", self.project)
-		task_list = [row.task_id for row in project.tasks]
-		
-		if self.name not in task_list:
-			project.append('tasks',{
-				'title': self.subject,
-				# 'start_date': self.exp_start_date,
-				# 'end_date': self.exp_end_date,
-				# 'description': self.description,
-				# 'task_id': self.name
-			})
-			frappe.db.commit()
+@frappe.whitelist()
+def remove_project_reference(task_name):
+	frappe.db.set_value("Task", task_name, "project", '')
 
 @frappe.whitelist()
 def sales_invoice_mails():
