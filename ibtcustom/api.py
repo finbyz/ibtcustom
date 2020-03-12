@@ -8,6 +8,7 @@ from email.utils import formataddr
 from datetime import timedelta, date, datetime, time
 from frappe.email.doctype.auto_email_report.auto_email_report import AutoEmailReport
 from frappe.model.mapper import get_mapped_doc
+from frappe.utils import (flt, now, nowtime, get_time, today, get_datetime, add_days)
 
 
 @frappe.whitelist()
@@ -157,19 +158,165 @@ def cancel_op(self, method):
 		op.db_set('grand_total', grand_total)
 		if grand_total == 0.0:
 			op.db_set('status', "Open")
-			
-@frappe.whitelist()		
+
+def project_validate(self,method):
+	sync_tasks(self)
+	self.tasks = []
+	load_tasks(self)
+
+def project_onload(self,method):
+	if not self.get('__unsaved') and not self.get("tasks"):
+		load_tasks(self)
+	
+def project_on_update(self,method):
+	delete_task(self)
+	load_tasks(self)
+
+@frappe.whitelist()
 def project_before_save(self, method):
 	set_progress(self)
 
 def set_progress(self):
-	for row in self.tasks:
-		if row.status == "Closed":
-			frappe.db.set_value("Task", row.task_id, 'progress', 100.0)
-		elif row.status == "Open":
-			frappe.db.set_value("Task", row.task_id, 'progress', 0.0)
+	if self.tasks:
+		for row in self.tasks:
+			if row.status == "Closed":
+				frappe.db.set_value("Task", row.task_id, 'progress', 100.0)
+			elif row.status == "Open":
+				frappe.db.set_value("Task", row.task_id, 'progress', 0.0)
 
-	self.run_method('update_percent_complete')
+		self.run_method('update_percent_complete')
+
+def delete_task(self):
+	if not self.get('deleted_task_list'): return
+
+	for d in self.get('deleted_task_list'):
+		# unlink project
+		frappe.db.set_value('Task', d, 'project', '')
+
+	self.deleted_task_list = []
+
+def load_tasks(self):
+	"""Load `tasks` from the database"""
+	project_task_custom_fields = frappe.get_all("Custom Field", {"dt": "Project Task"}, "fieldname")
+
+	self.tasks = []
+	for task in get_tasks(self):
+		task_map = {
+			"title": task.subject,
+			"status": task.status,
+			"start_date": task.exp_start_date,
+			"end_date": task.exp_end_date,
+			"description": task.description,
+			"task_id": task.name,
+		}
+
+		map_custom_fields(self, task, task_map, project_task_custom_fields)
+
+		self.append("tasks", task_map)
+
+
+def sync_tasks(self):
+	"""sync tasks and remove table"""
+	if not hasattr(self, "deleted_task_list"):
+		self.set("deleted_task_list", [])
+
+	if self.flags.dont_sync_tasks: return
+	task_names = []
+
+	existing_task_data = {}
+
+	fields = ["title", "status", "start_date", "end_date", "description", "task_id"]
+	# exclude_fieldtype = ["Button", "Column Break",
+	# 	"Section Break", "Table", "Read Only", "Attach", "Attach Image", "Color", "Geolocation", "HTML", "Image"]
+
+	custom_fields = frappe.get_all("Custom Field", {"dt": "Project Task"}, "fieldname")
+
+	for d in custom_fields:
+		fields.append(d.fieldname)
+
+	for d in frappe.get_all('Project Task',
+		fields = fields,
+		filters = {'parent': self.name}):
+		existing_task_data.setdefault(d.task_id, d)
+
+	for t in self.tasks:
+		if t.task_id:
+			task = frappe.get_doc("Task", t.task_id)
+		else:
+			task = frappe.new_doc("Task")
+			task.project = self.name
+
+		if not t.task_id or self.is_row_updated(t, existing_task_data, fields):
+			task.update({
+				"subject": t.title,
+				"status": t.status,
+				"exp_start_date": t.start_date,
+				"exp_end_date": t.end_date,
+				"description": t.description,
+			})
+
+			map_custom_fields(self, t, task, custom_fields)
+
+			task.flags.ignore_links = True
+			task.flags.from_project = True
+			task.flags.ignore_feed = True
+
+			if t.task_id:
+				task.update({
+					"modified_by": frappe.session.user,
+					"modified": now()
+				})
+
+				task.run_method("validate")
+				task.db_update()
+				task.notify_update()
+			else:
+				task.save(ignore_permissions = True)
+			task_names.append(task.name)
+		else:
+			task_names.append(task.name)
+
+	# delete
+	# for t in frappe.get_all("Task", ["name"], {"project": self.name, "name": ("not in", task_names)}):
+	# 	self.deleted_task_list.append(t.name)
+
+def map_custom_fields(self, source, target, custom_fields):
+	for field in custom_fields:
+		target.update({
+			field.fieldname: source.get(field.fieldname)
+		})
+
+def get_tasks(self):
+	if self.name is None:
+		return {}
+	else:
+		filters = {"project": self.name}
+
+		if self.get("deleted_task_list"):
+			filters.update({
+				'name': ("not in", self.deleted_task_list)
+			})
+
+		return frappe.get_all("Task", "*", filters, order_by="exp_start_date asc, status asc")
+
+def task_validate(self,method):
+	pass
+	#add_task_child(self)
+
+def add_task_child(self):
+	if self.project:
+		project = frappe.get_doc("Project", self.project)
+		task_list = [row.task_id for row in project.tasks]
+		
+		if self.name not in task_list:
+			project.append('tasks',{
+				'title': self.subject,
+				# 'start_date': self.exp_start_date,
+				# 'end_date': self.exp_end_date,
+				# 'description': self.description,
+				# 'task_id': self.name
+			})
+			frappe.db.commit()
 
 @frappe.whitelist()
 def sales_invoice_mails():
