@@ -5,11 +5,11 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "assign_to",
   "status",
   "column_break_4",
   "start_date",
   "end_date",
+  "assigned_to",
   "section_break_6",
   "description",
   "task_id"
@@ -64,7 +64,7 @@
    "read_only": 1
   },
   {
-   "fieldname": "assign_to",
+   "fieldname": "assigned_to",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Assign To",
@@ -72,7 +72,7 @@
   }
  ],
  "istable": 1,
- "modified": "2020-03-12 16:39:06.655875",
+ "modified": "2020-03-12 17:10:18.035325",
  "modified_by": "Administrator",
  "module": "IBTCustom",
  "name": "Project Task",

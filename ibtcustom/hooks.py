@@ -171,6 +171,7 @@ doc_events = {
 	"Project":{
 		"before_save":"ibtcustom.api.project_before_save",
 		"validate": "ibtcustom.api.project_validate",
+		"before_validate": "ibtcustom.api.project_before_validate",
 		"onload": "ibtcustom.api.project_onload",
 		"on_update": "ibtcustom.api.project_on_update"
 	},

@@ -161,6 +161,8 @@ def cancel_op(self, method):
 
 def project_validate(self,method):
 	sync_tasks(self)
+
+def project_before_validate(self,method):
 	self.project_tasks = []
 	load_tasks(self)
 
@@ -170,7 +172,7 @@ def project_onload(self,method):
 	
 def project_on_update(self,method):
 	delete_task(self)
-	load_tasks(self)
+	#load_tasks(self)
 
 @frappe.whitelist()
 def project_before_save(self, method):
@@ -207,6 +209,7 @@ def load_tasks(self):
 			"start_date": task.exp_start_date,
 			"end_date": task.exp_end_date,
 			"description": task.description,
+			"assigned_to": task.assigned_to,
 			"task_id": task.name,
 		}
 
@@ -225,7 +228,7 @@ def sync_tasks(self):
 
 	existing_task_data = {}
 
-	fields = ["title", "status", "start_date", "end_date", "description", "task_id"]
+	fields = ["title", "status", "start_date", "end_date", "description", "assigned_to", "task_id"]
 	# exclude_fieldtype = ["Button", "Column Break",
 	# 	"Section Break", "Table", "Read Only", "Attach", "Attach Image", "Color", "Geolocation", "HTML", "Image"]
 
@@ -253,7 +256,7 @@ def sync_tasks(self):
 				"exp_start_date": t.start_date,
 				"exp_end_date": t.end_date,
 				"description": t.description,
-				"assigned_to": t.assign_to
+				"assigned_to": t.assigned_to
 			})
 
 			map_custom_fields(self, t, task, custom_fields)
