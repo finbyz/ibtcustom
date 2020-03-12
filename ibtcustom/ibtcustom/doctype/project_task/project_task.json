@@ -5,6 +5,7 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
+  "assign_to",
   "status",
   "column_break_4",
   "start_date",
@@ -27,7 +28,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Open\nWorking\nPending Review\nOverdue\nClosed\nCancelled",
+   "options": "Open\nWorking\nPending Review\nOverdue\nCompleted\nCancelled",
    "reqd": 1
   },
   {
@@ -61,10 +62,17 @@
    "label": "Task ID",
    "options": "Task",
    "read_only": 1
+  },
+  {
+   "fieldname": "assign_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Assign To",
+   "options": "User"
   }
  ],
  "istable": 1,
- "modified": "2020-03-12 16:15:00.833232",
+ "modified": "2020-03-12 16:39:06.655875",
  "modified_by": "Administrator",
  "module": "IBTCustom",
  "name": "Project Task",

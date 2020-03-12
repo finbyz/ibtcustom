@@ -253,6 +253,7 @@ def sync_tasks(self):
 				"exp_start_date": t.start_date,
 				"exp_end_date": t.end_date,
 				"description": t.description,
+				"assigned_to": t.assign_to
 			})
 
 			map_custom_fields(self, t, task, custom_fields)
