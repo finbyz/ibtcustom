@@ -161,8 +161,6 @@ def cancel_op(self, method):
 
 def project_validate(self,method):
 	sync_tasks(self)
-
-def project_before_validate(self,method):
 	self.project_tasks = []
 	load_tasks(self)
 
@@ -172,7 +170,7 @@ def project_onload(self,method):
 	
 def project_on_update(self,method):
 	delete_task(self)
-	#load_tasks(self)
+	load_tasks(self)
 
 @frappe.whitelist()
 def project_before_save(self, method):
