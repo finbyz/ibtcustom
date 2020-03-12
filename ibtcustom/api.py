@@ -161,11 +161,11 @@ def cancel_op(self, method):
 
 def project_validate(self,method):
 	sync_tasks(self)
-	self.tasks = []
+	self.project_tasks = []
 	load_tasks(self)
 
 def project_onload(self,method):
-	if not self.get('__unsaved') and not self.get("tasks"):
+	if not self.get('__unsaved') and not self.get("project_tasks"):
 		load_tasks(self)
 	
 def project_on_update(self,method):
@@ -177,8 +177,8 @@ def project_before_save(self, method):
 	set_progress(self)
 
 def set_progress(self):
-	if self.tasks:
-		for row in self.tasks:
+	if self.project_tasks:
+		for row in self.project_tasks:
 			if row.status == "Closed":
 				frappe.db.set_value("Task", row.task_id, 'progress', 100.0)
 			elif row.status == "Open":
@@ -212,7 +212,7 @@ def load_tasks(self):
 
 		map_custom_fields(self, task, task_map, project_task_custom_fields)
 
-		self.append("tasks", task_map)
+		self.append("project_tasks", task_map)
 
 
 def sync_tasks(self):
@@ -239,7 +239,7 @@ def sync_tasks(self):
 		filters = {'parent': self.name}):
 		existing_task_data.setdefault(d.task_id, d)
 
-	for t in self.tasks:
+	for t in self.project_tasks:
 		if t.task_id:
 			task = frappe.get_doc("Task", t.task_id)
 		else:

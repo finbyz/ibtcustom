@@ -1,5 +1,5 @@
 frappe.ui.form.on("Project Task", {
-    before_tasks_remove: function (frm, cdt, cdn) {
+    before_project_tasks_remove: function (frm, cdt, cdn) {
         let d = locals[cdt][cdn]
         if (d.task_id) {
             frappe.call({
