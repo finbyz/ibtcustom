@@ -940,7 +940,7 @@ def set_due_date(self):
 	while i<due_days:
 		i+=1
 		due_date= add_days(due_date,1)
-		if due_date.weekday() == 5:
+		if due_date.weekday() in (5,6):
 				due_days += 1
 		elif due_date in holiday_list:
 			due_days+=1
