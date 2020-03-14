@@ -164,16 +164,13 @@ def project_validate(self,method):
 	self.project_tasks = []
 	load_tasks(self)
 
-def project_before_validate(self,method):
-	pass
-
 def project_onload(self,method):
 	if not self.get('__unsaved') and not self.get("project_tasks"):
 		load_tasks(self)
 	
 def project_on_update(self,method):
 	delete_task(self)
-	#load_tasks(self)
+	load_tasks(self)
 
 @frappe.whitelist()
 def project_before_save(self, method):
@@ -217,7 +214,6 @@ def load_tasks(self):
 		map_custom_fields(self, task, task_map, project_task_custom_fields)
 
 		self.append("project_tasks", task_map)
-		self.reload()
 
 def sync_tasks(self):
 	"""sync tasks and remove table"""
