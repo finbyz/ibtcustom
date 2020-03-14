@@ -161,16 +161,18 @@ def cancel_op(self, method):
 
 def project_validate(self,method):
 	sync_tasks(self)
-	self.project_tasks = []
+	# self.project_tasks = []
 	load_tasks(self)
 
 def project_onload(self,method):
-	if not self.get('__unsaved') and not self.get("project_tasks"):
-		load_tasks(self)
+	pass
+	# if not self.get('__unsaved') and not self.get("project_tasks"):
+	# 	load_tasks(self)
 	
 def project_on_update(self,method):
 	delete_task(self)
-	load_tasks(self)
+	# load_tasks(self)
+	pass
 
 @frappe.whitelist()
 def project_before_save(self, method):
@@ -199,21 +201,31 @@ def load_tasks(self):
 	"""Load `tasks` from the database"""
 	project_task_custom_fields = frappe.get_all("Custom Field", {"dt": "Project Task"}, "fieldname")
 
-	self.project_tasks = []
+	# self.project_tasks = []
+	item_task = [project.task_id for project in self.project_tasks]
 	for task in get_tasks(self):
-		task_map = {
-			"title": task.subject,
-			"status": task.status,
-			"start_date": task.exp_start_date,
-			"end_date": task.exp_end_date,
-			"description": task.description,
-			"assigned_to": task.assigned_to,
-			"task_id": task.name,
-		}
+		if task.name not in item_task:
+			task_map = {
+				"title": task.subject,
+				"status": task.status,
+				"start_date": task.exp_start_date,
+				"end_date": task.exp_end_date,
+				"description": task.description,
+				"task_id": task.name,
+			}
+			map_custom_fields(self,task, task_map, project_task_custom_fields)
 
-		map_custom_fields(self, task, task_map, project_task_custom_fields)
+			self.append("project_tasks", task_map)
 
-		self.append("project_tasks", task_map)
+def is_row_updated(self, row, existing_task_data):
+	if self.get("__islocal") or not existing_task_data: return True
+
+	d = existing_task_data.get(row.task_id)
+
+	if (d and (row.title != d.title or row.status != d.status
+		or getdate(row.start_date) != getdate(d.start_date) or getdate(row.end_date) != getdate(d.end_date)
+		or row.description != d.description )):
+		return True
 
 def sync_tasks(self):
 	"""sync tasks and remove table"""
@@ -246,7 +258,7 @@ def sync_tasks(self):
 			task = frappe.new_doc("Task")
 			task.project = self.name
 
-		if not t.task_id or self.is_row_updated(t, existing_task_data, fields):
+		if not t.task_id or is_row_updated(self, t, existing_task_data):
 			task.update({
 				"subject": t.title,
 				"status": t.status,
@@ -273,9 +285,11 @@ def sync_tasks(self):
 				task.notify_update()
 			else:
 				task.save(ignore_permissions = True)
+				t.task_id = task.name
 			task_names.append(task.name)
 		else:
 			task_names.append(task.name)
+		
 
 	# delete
 	# for t in frappe.get_all("Task", ["name"], {"project": self.name, "name": ("not in", task_names)}):
@@ -291,14 +305,7 @@ def get_tasks(self):
 	if self.name is None:
 		return {}
 	else:
-		filters = {"project": self.name}
-
-		if self.get("deleted_task_list"):
-			filters.update({
-				'name': ("not in", self.deleted_task_list)
-			})
-
-		return frappe.get_all("Task", "*", filters, order_by="exp_start_date asc, status asc")
+		return frappe.get_all("Task", "*", {"project": self.name}, order_by="exp_start_date asc, status asc")
 
 @frappe.whitelist()
 def remove_project_reference(task_name):

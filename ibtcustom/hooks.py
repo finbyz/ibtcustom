@@ -169,10 +169,8 @@ doc_events = {
 		"validate": "ibtcustom.api.ela_validate"
 	},
 	"Project":{
-		"before_save":"ibtcustom.api.project_before_save",
-		"validate": "ibtcustom.api.project_validate",
-		"onload": "ibtcustom.api.project_onload",
-		"on_update": "ibtcustom.api.project_on_update"
+		# "before_save":"ibtcustom.api.project_before_save",
+		"before_validate": "ibtcustom.api.project_validate",
 	},
 	"Purchase Order": {
 		"on_submit": "ibtcustom.api.po_on_submit",
