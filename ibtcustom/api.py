@@ -254,11 +254,15 @@ def sync_tasks(self):
 	for t in self.project_tasks:
 		if t.task_id:
 			task = frappe.get_doc("Task", t.task_id)
+			if not t.assigned_to:
+				t.assigned_to = task.assigned_to
 		else:
 			task = frappe.new_doc("Task")
 			task.project = self.name
 
 		if not t.task_id or is_row_updated(self, t, existing_task_data):
+			if not t.assigned_to:
+				t.assigned_to = task.assigned_to
 			task.update({
 				"subject": t.title,
 				"status": t.status,
@@ -286,6 +290,7 @@ def sync_tasks(self):
 			else:
 				task.save(ignore_permissions = True)
 				t.task_id = task.name
+				t.assigned_to = task.assigned_to
 			task_names.append(task.name)
 		else:
 			task_names.append(task.name)
