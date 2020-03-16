@@ -7,7 +7,7 @@ frappe.ui.form.on("Project Task", {
                 'args': {
                     'task_name': d.task_id
                 }
-            })
+            });
            	
         }
     }
