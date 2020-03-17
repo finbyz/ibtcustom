@@ -188,7 +188,7 @@ scheduler_events = {
 	"daily": [
 		"ibtcustom.api.employee_birthday_mails",
 		"ibtcustom.api.employee_anniversary_mails",
-		#"ibtcustom.api.daily_task_report",
+		"ibtcustom.api.daily_task_report",
 		"ibtcustom.api.make_todo",
 		"ibtcustom.api.update_issue_status",
 		"ibtcustom.api.disable_customer",
