@@ -9,6 +9,7 @@ from datetime import timedelta, date, datetime, time
 from frappe.email.doctype.auto_email_report.auto_email_report import AutoEmailReport
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import (flt, now, nowtime, get_time, today, get_datetime, add_days)
+from frappe.core.doctype.communication.email import make
 
 
 @frappe.whitelist()
@@ -767,9 +768,10 @@ def send_task_report_mail():
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
 		
-		sendmail(recipients = 'nirali.satapara@finbyz.tech, gaurav.arora@ibtevolve.com',
+		make(recipients = ['nirali.satapara@finbyz.tech, gaurav.arora@ibtevolve.com'],
+				send_email=True,
 				subject = 'Daily Report: ' + employee_name,
-				message = message)
+				content = message)
 		# sendmail(recipients = recipients_list,
 		# 		subject = 'Daily Report: ' + employee_name,
 		# 		message = message)
