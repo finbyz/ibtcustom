@@ -766,10 +766,13 @@ def send_task_report_mail():
 
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
-
-		sendmail(recipients = recipients_list,
+		
+		sendmail(recipients = 'nirali.satapara@finbyz.tech, gaurav.arora@ibtevolve.com',
 				subject = 'Daily Report: ' + employee_name,
 				message = message)
+		# sendmail(recipients = recipients_list,
+		# 		subject = 'Daily Report: ' + employee_name,
+		# 		message = message)
 
 @frappe.whitelist()
 def weekly_reports():
