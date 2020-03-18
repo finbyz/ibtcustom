@@ -767,11 +767,14 @@ def send_task_report_mail():
  
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
-		
-		make(recipients = recipients_list,
-				send_email=True,
-				subject = 'Daily Report: ' + employee_name,
-				content = message)
+		try:
+			make(recipients = recipients_list,
+					send_email=True,
+					subject = 'Daily Report: ' + employee_name,
+					content = message)
+		except:
+			frappe.log_error("Mail Sending Issue", frappe.get_traceback())
+			continue
 		# sendmail(recipients = recipients_list,
 		# 		subject = 'Daily Report: ' + employee_name,
 		# 		message = message)
@@ -1066,11 +1069,11 @@ def ela_validate(self, method):
 	validate_loan_amount(self)
 
 def validate_loan_amount(self):
-        base = frappe.db.get_value("Salary Structure Employee", {'employee': self.employee}, 'base')
+		base = frappe.db.get_value("Salary Structure Employee", {'employee': self.employee}, 'base')
 
-        if self.loan_amount > (base/2):
-                validated = False
-                frappe.throw(_("Loan amount can not be more than 50% of salary"))
+		if self.loan_amount > (base/2):
+				validated = False
+				frappe.throw(_("Loan amount can not be more than 50% of salary"))
 
 @frappe.whitelist()
 def make_exit_form(source_name, target_doc=None):
@@ -1259,34 +1262,45 @@ def yearly_leave_allocation():
 
 @frappe.whitelist()
 def get_sales_owner(sales_manager):
-        emp = frappe.db.get_value("Sales Person", sales_manager, "employee")
-        emp_details = frappe.db.get_value("Employee", emp, ["user_id", "employee_name"])
+		emp = frappe.db.get_value("Sales Person", sales_manager, "employee")
+		emp_details = frappe.db.get_value("Employee", emp, ["user_id", "employee_name"])
 
-        return emp_details
+		return emp_details
 
 @frappe.whitelist()
 def send_event_digest():
-        from frappe.utils import format_datetime, nowdate
-        from frappe.utils.user import get_enabled_system_users
-        from frappe.desk.doctype.event.event import get_events
+		from frappe.utils import format_datetime, nowdate
+		from frappe.utils.user import get_enabled_system_users
+		from frappe.desk.doctype.event.event import get_events
 
-        today = nowdate()
-        for user in get_enabled_system_users():
-                events = get_events(today, today, user.name, for_reminder=True)
-                if events:
-                        frappe.set_user_lang(user.name, user.language)
+		today = nowdate()
+		for user in get_enabled_system_users():
+				events = get_events(today, today, user.name, for_reminder=True)
+				if events:
+						frappe.set_user_lang(user.name, user.language)
 
-                        for e in events:
-                                e.starts_on = format_datetime(e.starts_on, 'hh:mm a')
-                                if e.all_day:
-                                        e.starts_on = "All Day"
+						for e in events:
+								e.starts_on = format_datetime(e.starts_on, 'hh:mm a')
+								if e.all_day:
+										e.starts_on = "All Day"
 
-                        frappe.sendmail(
-                                recipients=user.email,
-                                subject=frappe._("Upcoming Events for Today"),
-                                template="upcoming_events",
-                                args={
-                                        'events': events,
-                                },
-                                header=[frappe._("Events in Today's Calendar"), 'blue']
-                        )
+						frappe.sendmail(
+								recipients=user.email,
+								subject=frappe._("Upcoming Events for Today"),
+								template="upcoming_events",
+								args={
+										'events': events,
+								},
+								header=[frappe._("Events in Today's Calendar"), 'blue']
+						)
+
+def compensatory_leave_before_validate(self,method):
+	from erpnext.hr.doctype.compensatory_leave_request.compensatory_leave_request import CompensatoryLeaveRequest
+	CompensatoryLeaveRequest.validate_holidays = override_validate_holidays
+	CompensatoryLeaveRequest.validate_attendance = override_validate_attendance
+
+def override_validate_holidays(self):
+	pass
+
+def override_validate_attendance(self):
+	pass

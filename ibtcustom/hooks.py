@@ -40,7 +40,8 @@ app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 doctype_js = {
-	 "Project" : "public/js/project.js"
+	"Project" : "public/js/project.js",
+	"Compensatory Leave Request": "public/js/doctype_js/compensatory_leave_request.js"
 }
 
 # Home Pages
@@ -178,6 +179,9 @@ doc_events = {
 	},
 	"Issue":{
 		"before_save":"ibtcustom.api.issue_before_save"
+	},
+	"Compensatory Leave Request": {
+		"before_validate": "ibtcustom.api.compensatory_leave_before_validate"
 	}
 }
 
