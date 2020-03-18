@@ -717,7 +717,7 @@ def send_task_report_mail():
 		task_details = ''
 		for row in task_data:
 			if row.assigned_to == user:
-				task_details += get_task_table_data(row.subject, row.project, row.status, row.exp_start_date, row.exp_end_date)
+				task_details += get_task_table_data(row.subject, row.project, row.status, row.exp_start_date, row.exp_end_date) or ''
 
 		if task_details:
 			message += get_task_table_heading() + task_details + "</tbody></table></div>"
@@ -725,7 +725,7 @@ def send_task_report_mail():
 		todo_details = ''
 		for row in todo_data:
 			if row.owner == user:
-				todo_details += get_todo_table_data(row.task_name, row.date, row.status, row.assign_to)
+				todo_details += get_todo_table_data(row.task_name, row.date, row.status, row.assign_to) or ''
 
 		if todo_details:
 			message += get_todo_table_heading() + todo_details + "</tbody></table></div>"
@@ -739,7 +739,7 @@ def send_task_report_mail():
 				if row.phone is not None:
 					contact.append(row.phone)
 
-				lead_details += get_opp_lead_table_data(row.company_name, row.lead_name, row.contact_by, row.contact_date, '<br>'.join(contact), row.status)
+				lead_details += get_opp_lead_table_data(row.company_name, row.lead_name, row.contact_by, row.contact_date, '<br>'.join(contact), row.status) or ''
 
 		if lead_details:
 			message += get_opp_lead_heading('Lead','Organization Name') + lead_details + "</tbody></table></div>"
@@ -747,7 +747,7 @@ def send_task_report_mail():
 		opp_details = ''
 		for row in opportunity_data:
 			if row.contact_by == user:
-				opp_details += get_opp_lead_table_data(row.customer_name, row.contact_by_name, row.contact_by, row.contact_date, row.contact_mobile, row.status)
+				opp_details += get_opp_lead_table_data(row.customer_name, row.contact_by_name, row.contact_by, row.contact_date, row.contact_mobile, row.status) or ''
 
 		if opp_details:
 			message += get_opp_lead_heading('Opportunity', 'Customer / Lead Name') + opp_details + "</tbody></table></div>"
@@ -755,7 +755,7 @@ def send_task_report_mail():
 		qtn_details = ''
 		for row in quotation_data:
 			if row.owner == user:
-				qtn_details += get_quotation_data(row.customer_name, row.transaction_date, row.contact_display, row.contact_mobile, row.owner)
+				qtn_details += get_quotation_data(row.customer_name, row.transaction_date, row.contact_display, row.contact_mobile, row.owner) or ''
 
 		if qtn_details:
 			message += get_quotation_heading() + qtn_details + "</tbody></table></div>"
@@ -763,8 +763,8 @@ def send_task_report_mail():
 		issue_details = ''
 		for row in issue_data:
 			if row.assigned_to == user:
-				issue_details += get_issue_data(row.subject, row.customer, row.engineer_group, row.opening_date, row.due_date)
-
+				issue_details += get_issue_data(row.subject, row.customer, row.engineer_group, row.opening_date, row.due_date) or ''
+ 
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
 		
