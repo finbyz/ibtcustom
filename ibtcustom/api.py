@@ -767,7 +767,7 @@ def send_task_report_mail():
 
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
-		return recipients_list
+		
 		make(recipients = recipients_list,
 				send_email=True,
 				subject = 'Daily Report: ' + employee_name,
