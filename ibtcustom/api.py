@@ -767,15 +767,15 @@ def send_task_report_mail():
  
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
-		# try:
-		# 	make(recipients = recipients_list,
-		# 			send_email=True,
-		# 			subject = 'Daily Report: ' + employee_name,
-		# 			content = message)
-		# 	cnt +=1
-		# except:
-		# 	frappe.log_error("Mail Sending Issue", frappe.get_traceback())
-		# 	continue
+		try:
+			make(recipients = recipients_list,
+					send_email=True,
+					subject = 'Daily Report: ' + employee_name,
+					content = message)
+			cnt +=1
+		except:
+			frappe.log_error("Mail Sending Issue", frappe.get_traceback())
+			continue
 	frappe.db.set_value("Test", "TEST001", "mail", cnt)
 		# sendmail(recipients = recipients_list,
 		# 		subject = 'Daily Report: ' + employee_name,
