@@ -500,7 +500,7 @@ def daily_task_report():
 	return "Daily Task report enqueued"
 
 def send_task_report_mail():
-
+	cnt = 0
 	def get_task_table_heading():
 		return """<h3 align='center'>Tasks</h3><br>
 			<div align="center">
@@ -772,9 +772,11 @@ def send_task_report_mail():
 					send_email=True,
 					subject = 'Daily Report: ' + employee_name,
 					content = message)
+			cnt +=1
 		except:
 			frappe.log_error("Mail Sending Issue", frappe.get_traceback())
 			continue
+	frappe.db.set_value("Test", "TEST001", "mail", cnt)
 		# sendmail(recipients = recipients_list,
 		# 		subject = 'Daily Report: ' + employee_name,
 		# 		message = message)
