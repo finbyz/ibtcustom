@@ -496,7 +496,7 @@ def send_employee_anniversary_mails():
 
 @frappe.whitelist()
 def daily_task_report():
-	enqueue(send_task_report_mail, queue='long', timeout=2000)
+	enqueue(send_task_report_mail, queue='long', timeout=2000, job_name='Daily Task Mails')
 	return "Daily Task report enqueued"
 
 def send_task_report_mail():
@@ -519,11 +519,11 @@ def send_task_report_mail():
 		exp_end_date = exp_end_date.strftime("%d-%m-%Y") if exp_end_date is not None else '-'
 
 		return """<tr>
-				<td width="30%" valign="top">""" + subject + """ </td>
-				<td width="34%" valign="top">""" + project + """ </td>
-				<td width="10%" valign="top">""" + exp_start_date + """ </td>
-				<td width="10%" valign="top">""" + exp_end_date + """ </td>
-				<td width="13%" valign="top">""" + status + """ </td>
+				<td width="30%" valign="top">""" + subject or '' + """ </td>
+				<td width="34%" valign="top">""" + project or ''+ """ </td>
+				<td width="10%" valign="top">""" + exp_start_date or '' + """ </td>
+				<td width="10%" valign="top">""" + exp_end_date or '' + """ </td>
+				<td width="13%" valign="top">""" + status or '' + """ </td>
 				</tr>"""
 
 	def get_todo_table_heading():
@@ -544,19 +544,19 @@ def send_task_report_mail():
 		status = status or '-'
 		assign_to = assign_to or '-'
 		return """<tr>
-				<td width="25%" valign="top"> """ + task_name + """ </td>
-				<td width="25%" valign="top"> """ + due_date + """ </td>
-				<td width="25%" valign="top"> """ + status + """ </td>
-				<td width="25%" valign="top"> """ + assign_to + """ </td>
+				<td width="25%" valign="top"> """ + task_name or '' + """ </td>
+				<td width="25%" valign="top"> """ + due_date or '' + """ </td>
+				<td width="25%" valign="top"> """ + status or '' + """ </td>
+				<td width="25%" valign="top"> """ + assign_to or '' + """ </td>
 				</tr>"""
 
 	def get_opp_lead_heading(heading, name):
-		return """<h3 align='center'>""" + heading + """</h3><br>
+		return """<h3 align='center'>""" + heading or ''+ """</h3><br>
 				<div align="center">
 				<table border="1" cellspacing="0" cellpadding="0" width="100%">
 				<thead>
 				<tr>
-				<th width="22%" valign="top"> """ + name + """ </th>
+				<th width="22%" valign="top"> Name </th>
 				<th width="17%" valign="top"> Contact Person </th>
 				<th width="18%" valign="top"> Next Contact By </th>
 				<th width="16%" valign="top"> Next Contact Date </th>
@@ -572,12 +572,12 @@ def send_task_report_mail():
 		contact_no = contact_no or '-'
 		status = status or '-'
 		return """<tr>
-				<td width="22%" valign="top"> """ + name + """ </td>
-				<td width="17%" valign="top"> """ + contact_person + """ </td>
-				<td width="18%" valign="top"> """ + contact_by + """ </td>
-				<td width="16%" valign="top"> """ + contact_date + """ </td>
-				<td width="16%" valign="top"> """ + contact_no + """ </td>
-				<td width="9%" valign="top"> """ + status + """ </td>
+				<td width="22%" valign="top"> """ + name or '' + """ </td>
+				<td width="17%" valign="top"> """ + contact_person or '' + """ </td>
+				<td width="18%" valign="top"> """ + contact_by or '' + """ </td>
+				<td width="16%" valign="top"> """ + contact_date or '' + """ </td>
+				<td width="16%" valign="top"> """ + contact_no or '' + """ </td>
+				<td width="9%" valign="top"> """ + status or '' + """ </td>
 				</tr>"""
 
 	def get_quotation_heading():
@@ -595,11 +595,11 @@ def send_task_report_mail():
 		transaction_date = transaction_date.strftime("%d-%m-%Y") if transaction_date is not None else '-'
 
 		return """<tr>
-				<td width="20%" valign="top"> """ + customer_name + """</td>
-				<td width="20%" valign="top"> """ + transaction_date + """</td>
-				<td width="20%" valign="top"> """ + contact + """</td>
-				<td width="20%" valign="top"> """ + mobile_no + """</td>
-				<td width="20%" valign="top"> """ + created_by + """</td>
+				<td width="20%" valign="top"> """ + customer_name or '' + """</td>
+				<td width="20%" valign="top"> """ + transaction_date or '' + """</td>
+				<td width="20%" valign="top"> """ + contact or '' + """</td>
+				<td width="20%" valign="top"> """ + mobile_no or '' + """</td>
+				<td width="20%" valign="top"> """ + created_by or '' + """</td>
 				</tr>"""
 
 	def get_issue_heading():
@@ -618,11 +618,11 @@ def send_task_report_mail():
 		due_date = due_date.strftime("%d-%m-%Y") if due_date is not None else '-'
 
 		return """<tr>
-				<td width="23%" valign="top"> """ + subject + """</td>
-				<td width="23%" valign="top"> """ + customer + """</td>
-				<td width="19%" valign="top"> """ + engineer + """</td>
-				<td width="17%" valign="top"> """ + opening_date + """</td>
-				<td width="17%" valign="top"> """ + due_date + """</td>
+				<td width="23%" valign="top"> """ + subject or '' + """</td>
+				<td width="23%" valign="top"> """ + customer or '' + """</td>
+				<td width="19%" valign="top"> """ + engineer or '' + """</td>
+				<td width="17%" valign="top"> """ + opening_date or '' + """</td>
+				<td width="17%" valign="top"> """ + due_date or '' + """</td>
 				</tr>"""
 
 	task_data = db.sql("""
@@ -767,15 +767,15 @@ def send_task_report_mail():
  
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
-		try:
-			make(recipients = recipients_list,
-					send_email=True,
-					subject = 'Daily Report: ' + employee_name,
-					content = message)
-			cnt +=1
-		except:
-			frappe.log_error("Mail Sending Issue", frappe.get_traceback())
-			continue
+		# try:
+		# 	make(recipients = recipients_list,
+		# 			send_email=True,
+		# 			subject = 'Daily Report: ' + employee_name,
+		# 			content = message)
+		# 	cnt +=1
+		# except:
+		# 	frappe.log_error("Mail Sending Issue", frappe.get_traceback())
+		# 	continue
 	frappe.db.set_value("Test", "TEST001", "mail", cnt)
 		# sendmail(recipients = recipients_list,
 		# 		subject = 'Daily Report: ' + employee_name,
