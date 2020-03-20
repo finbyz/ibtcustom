@@ -710,7 +710,7 @@ def send_task_report_mail():
 	issue_user = [d.assigned_to for d in issue_data]
 
 	user_list = list(set(task_user + todo_user + lead_user + opportunity_user + quotation_user + issue_user))
-
+	cc_list = []
 	for user in user_list:
 		if not db.exists({'doctype': 'Employee', 'company_email': user}):
 			continue
@@ -720,9 +720,9 @@ def send_task_report_mail():
 
 		if getdate().weekday() == 5:
 			if db.exists('Employee', {'name': manager, 'status': ('!=', 'Left')}):
-				recipients_list.append(db.get_value("Employee", manager, 'company_email'))
+				cc_list.append(db.get_value("Employee", manager, 'company_email'))
 			else:
-				recipients_list.append('operations.manager@ibtevolve.com')
+				cc_list.append('operations.manager@ibtevolve.com')
 
 		message = ''
 
@@ -783,7 +783,7 @@ def send_task_report_mail():
 		try:
 			make(recipients = recipients_list,
 					send_email=True,
-					cc = 'gaurav.arora@ibtevolve.com',
+					cc = cc_list,
 					subject = 'Daily Report: ' + employee_name,
 					content = message)
 			cnt +=1
@@ -860,7 +860,7 @@ def weekly_task_reports(project_type=None):
 	recipients = {
 		'BPO': ['shubham.dhamija@ibtevolve.com'],
 		'IT Outsourcing': ['mudassir.yousuff@ibtevolve.com', 'naushad.patel@ibtevolve.com'],
-		'IT Infrastructure': ['operations.manager@ibtevolve.com']
+		'IT Infrastructure': ['mudassir.yousuff@ibtevolve.com']
 		}.get(project_type)
 
 	recipients.append('jai.mulani@ibtevolve.com')
