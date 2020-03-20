@@ -781,8 +781,9 @@ def send_task_report_mail():
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
 		#recipients_list
 		try:
-			make(recipients = 'nirali.satapara@finbyz.tech',
+			make(recipients = 'recipients_list',
 					send_email=True,
+					cc = 'gaurav.arora@ibtevolve.com',
 					subject = 'Daily Report: ' + employee_name,
 					content = message)
 			cnt +=1
