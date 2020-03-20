@@ -517,13 +517,16 @@ def send_task_report_mail():
 	def get_task_table_data(subject, project, status, exp_start_date, exp_end_date):
 		exp_start_date = exp_start_date.strftime("%d-%m-%Y") if exp_start_date is not None else '-'	
 		exp_end_date = exp_end_date.strftime("%d-%m-%Y") if exp_end_date is not None else '-'
-
+		subject =  subject or '-'
+		project = project or '-'
+		status = status or '-'
+		
 		return """<tr>
-				<td width="30%" valign="top">""" + subject or '' + """ </td>
-				<td width="34%" valign="top">""" + project or ''+ """ </td>
-				<td width="10%" valign="top">""" + exp_start_date or '' + """ </td>
-				<td width="10%" valign="top">""" + exp_end_date or '' + """ </td>
-				<td width="13%" valign="top">""" + status or '' + """ </td>
+				<td width="30%" valign="top">""" + subject  + """ </td>
+				<td width="34%" valign="top">""" + project + """ </td>
+				<td width="10%" valign="top">""" + exp_start_date  + """ </td>
+				<td width="10%" valign="top">""" + exp_end_date + """ </td>
+				<td width="13%" valign="top">""" + status  + """ </td>
 				</tr>"""
 
 	def get_todo_table_heading():
@@ -543,11 +546,12 @@ def send_task_report_mail():
 		task_name = task_name or '-'
 		status = status or '-'
 		assign_to = assign_to or '-'
+
 		return """<tr>
-				<td width="25%" valign="top"> """ + task_name or '' + """ </td>
-				<td width="25%" valign="top"> """ + due_date or '' + """ </td>
-				<td width="25%" valign="top"> """ + status or '' + """ </td>
-				<td width="25%" valign="top"> """ + assign_to or '' + """ </td>
+				<td width="25%" valign="top"> """ + task_name  + """ </td>
+				<td width="25%" valign="top"> """ + due_date  + """ </td>
+				<td width="25%" valign="top"> """ + status + """ </td>
+				<td width="25%" valign="top"> """ + assign_to  + """ </td>
 				</tr>"""
 
 	def get_opp_lead_heading(heading, name):
@@ -571,13 +575,14 @@ def send_task_report_mail():
 		contact_by = contact_by or '-'
 		contact_no = contact_no or '-'
 		status = status or '-'
+
 		return """<tr>
-				<td width="22%" valign="top"> """ + name or '' + """ </td>
-				<td width="17%" valign="top"> """ + contact_person or '' + """ </td>
-				<td width="18%" valign="top"> """ + contact_by or '' + """ </td>
-				<td width="16%" valign="top"> """ + contact_date or '' + """ </td>
-				<td width="16%" valign="top"> """ + contact_no or '' + """ </td>
-				<td width="9%" valign="top"> """ + status or '' + """ </td>
+				<td width="22%" valign="top"> """ + name  + """ </td>
+				<td width="17%" valign="top"> """ + contact_person + """ </td>
+				<td width="18%" valign="top"> """ + contact_by  + """ </td>
+				<td width="16%" valign="top"> """ + contact_date  + """ </td>
+				<td width="16%" valign="top"> """ + contact_no  + """ </td>
+				<td width="9%" valign="top"> """ + status + """ </td>
 				</tr>"""
 
 	def get_quotation_heading():
@@ -593,13 +598,17 @@ def send_task_report_mail():
 
 	def get_quotation_data(customer_name, transaction_date, contact, mobile_no, created_by):
 		transaction_date = transaction_date.strftime("%d-%m-%Y") if transaction_date is not None else '-'
+		customer_name = customer_name or '-'
+		contact = contact or '-'
+		mobile_no = mobile_no or '-'
+		created_by = created_by or '-'
 
 		return """<tr>
-				<td width="20%" valign="top"> """ + customer_name or '' + """</td>
-				<td width="20%" valign="top"> """ + transaction_date or '' + """</td>
-				<td width="20%" valign="top"> """ + contact or '' + """</td>
-				<td width="20%" valign="top"> """ + mobile_no or '' + """</td>
-				<td width="20%" valign="top"> """ + created_by or '' + """</td>
+				<td width="20%" valign="top"> """ + customer_name  + """</td>
+				<td width="20%" valign="top"> """ + transaction_date + """</td>
+				<td width="20%" valign="top"> """ + contact  + """</td>
+				<td width="20%" valign="top"> """ + mobile_no + """</td>
+				<td width="20%" valign="top"> """ + created_by + """</td>
 				</tr>"""
 
 	def get_issue_heading():
@@ -616,13 +625,16 @@ def send_task_report_mail():
 	def get_issue_data(subject, customer, engineer, opening_date, due_date):
 		opening_date = opening_date.strftime("%d-%m-%Y") if opening_date is not None else '-'
 		due_date = due_date.strftime("%d-%m-%Y") if due_date is not None else '-'
+		engineer = engineer or '-'
+		customer = customer or '-'
+		subject = subject or '-'
 
 		return """<tr>
-				<td width="23%" valign="top"> """ + subject or '' + """</td>
-				<td width="23%" valign="top"> """ + customer or '' + """</td>
-				<td width="19%" valign="top"> """ + engineer or '' + """</td>
-				<td width="17%" valign="top"> """ + opening_date or '' + """</td>
-				<td width="17%" valign="top"> """ + due_date or '' + """</td>
+				<td width="23%" valign="top"> """ + subject + """</td>
+				<td width="23%" valign="top"> """ + customer + """</td>
+				<td width="19%" valign="top"> """ + engineer + """</td>
+				<td width="17%" valign="top"> """ + opening_date + """</td>
+				<td width="17%" valign="top"> """ + due_date + """</td>
 				</tr>"""
 
 	task_data = db.sql("""
