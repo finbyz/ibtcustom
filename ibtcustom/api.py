@@ -555,7 +555,7 @@ def send_task_report_mail():
 				</tr>"""
 
 	def get_opp_lead_heading(heading, name):
-		return """<h3 align='center'>""" + heading or ''+ """</h3><br>
+		return """<h3 align='center'>""" + heading + """</h3><br>
 				<div align="center">
 				<table border="1" cellspacing="0" cellpadding="0" width="100%">
 				<thead>
@@ -779,8 +779,9 @@ def send_task_report_mail():
  
 		if issue_details:
 			message += get_issue_heading() + issue_details + "</tbody></table></div>"
+		#recipients_list
 		try:
-			make(recipients = recipients_list,
+			make(recipients = 'nirali.satapara@finbyz.tech',
 					send_email=True,
 					subject = 'Daily Report: ' + employee_name,
 					content = message)
