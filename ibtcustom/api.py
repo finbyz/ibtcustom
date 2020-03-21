@@ -723,7 +723,7 @@ def send_task_report_mail():
 				cc_list.append(db.get_value("Employee", manager, 'company_email'))
 			else:
 				cc_list.append('operations.manager@ibtevolve.com')
-
+		print(cc_list)
 		message = ''
 
 		task_details = ''
