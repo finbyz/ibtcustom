@@ -207,7 +207,7 @@ def copy_from_template(self):
 				exp_end_date = add_days(self.expected_start_date, task.start + task.duration),
 				description = task.description,
 				task_weight = task.task_weight,
-				assigned_to = task.assigned_to
+				assign_to = task.assigned_to
 			)).insert()
 		self.save()
 
