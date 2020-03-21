@@ -170,8 +170,8 @@ doc_events = {
 		"validate": "ibtcustom.api.ela_validate"
 	},
 	"Project":{
-		# "before_save":"ibtcustom.api.project_before_save",
 		"before_validate": "ibtcustom.api.project_validate",
+		#"before_save": "ibtcustom.api.project_before_save",
 	},
 	"Purchase Order": {
 		"on_submit": "ibtcustom.api.po_on_submit",
@@ -213,3 +213,9 @@ scheduler_events = {
 doctype_list_js = {
         "Opportunity": "/public/js/controllers/list/opportunity_list.js"
 }
+
+#Override nonwhiteliested Methods
+# Override Project method copy from Template
+from erpnext.projects.doctype.project.project import Project
+from ibtcustom.api import copy_from_template
+Project.copy_from_template = copy_from_template

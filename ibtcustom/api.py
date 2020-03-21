@@ -172,12 +172,45 @@ def project_onload(self,method):
 	
 def project_on_update(self,method):
 	delete_task(self)
-	# load_tasks(self)
-	pass
+
+
 
 @frappe.whitelist()
 def project_before_save(self, method):
 	set_progress(self)
+
+#Override class method of Copy from Temlate for assigned to field
+def copy_from_template(self):
+	'''
+	Copy tasks from template
+	'''
+	if self.project_template and not frappe.db.get_all('Task', dict(project = self.name), limit=1):
+
+		# has a template, and no loaded tasks, so lets create
+		if not self.expected_start_date:
+			# project starts today
+			self.expected_start_date = today()
+
+		template = frappe.get_doc('Project Template', self.project_template)
+
+		if not self.project_type:
+			self.project_type = template.project_type
+
+		# create tasks from template
+		for task in template.tasks:
+			frappe.get_doc(dict(
+				doctype = 'Task',
+				subject = task.subject,
+				project = self.name,
+				status = 'Open',
+				exp_start_date = add_days(self.expected_start_date, task.start),
+				exp_end_date = add_days(self.expected_start_date, task.start + task.duration),
+				description = task.description,
+				task_weight = task.task_weight,
+				assigned_to = task.assigned_to
+			)).insert()
+		self.save()
+
 
 def set_progress(self):
 	if self.project_tasks:
@@ -209,6 +242,7 @@ def load_tasks(self):
 			task_map = {
 				"title": task.subject,
 				"status": task.status,
+				"assigned_to": task.assigned_to,
 				"start_date": task.exp_start_date,
 				"end_date": task.exp_end_date,
 				"description": task.description,
