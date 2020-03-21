@@ -710,8 +710,8 @@ def send_task_report_mail():
 	issue_user = [d.assigned_to for d in issue_data]
 
 	user_list = list(set(task_user + todo_user + lead_user + opportunity_user + quotation_user + issue_user))
-	cc_list = []
 	for user in user_list:
+		#cc_list = []
 		if not db.exists({'doctype': 'Employee', 'company_email': user}):
 			continue
 
@@ -720,10 +720,9 @@ def send_task_report_mail():
 
 		if getdate().weekday() == 5:
 			if db.exists('Employee', {'name': manager, 'status': ('!=', 'Left')}):
-				cc_list.append(db.get_value("Employee", manager, 'company_email'))
+				recipients_list.append(db.get_value("Employee", manager, 'company_email'))
 			else:
-				cc_list.append('operations.manager@ibtevolve.com')
-		print(cc_list)
+				recipients_list.append('operations.manager@ibtevolve.com')
 		message = ''
 
 		task_details = ''
@@ -783,7 +782,6 @@ def send_task_report_mail():
 		try:
 			make(recipients = recipients_list,
 					send_email=True,
-					cc = cc_list,
 					subject = 'Daily Report: ' + employee_name,
 					content = message)
 			cnt +=1
