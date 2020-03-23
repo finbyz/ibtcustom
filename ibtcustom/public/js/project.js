@@ -13,9 +13,11 @@ frappe.ui.form.on("Project", {
         });
     },
     before_save: function (frm) {
-        frappe.db.get_value("Project Template", { 'project_type': frm.doc.project_type }, 'name', (r) => {
-            frm.set_value('project_template', r.name);
-        });
+        if (frm.doc.__islocal) {
+            frappe.db.get_value("Project Template", { 'project_type': frm.doc.project_type }, 'name', (r) => {
+                frm.set_value('project_template', r.name);
+            });
+        }      
     }
 });
 
