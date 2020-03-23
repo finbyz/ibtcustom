@@ -13,11 +13,17 @@ frappe.ui.form.on("Project", {
         });
     },
     before_save: function (frm) {
-        if (frm.doc.__islocal) {
-            frappe.db.get_value("Project Template", { 'project_type': frm.doc.project_type }, 'name', (r) => {
-                frm.set_value('project_template', r.name);
+        if (frm.doc.sales_order) {
+            frappe.db.get_value("Sales Order", frm.doc.sales_order, 'quotation_segment', (r) => {
+                frm.set_value('project_type', r.quotation_segment);
             });
-        }      
+        }
+        if (frm.doc.__islocal) {
+            frappe.db.get_value("Project Template", { 'project_type': frm.doc.project_type }, 'name', (m) => {
+                frm.set_value('project_template', m.name);
+            });
+        }
+        
     }
 });
 
