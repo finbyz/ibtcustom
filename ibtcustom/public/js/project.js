@@ -11,6 +11,11 @@ frappe.ui.form.on("Project", {
         frappe.db.get_value("Project Template",{'project_type': frm.doc.project_type}, 'name', (r) => {
             frm.set_value('project_template', r.name);
         });
+    },
+    before_save: function (frm) {
+        frappe.db.get_value("Project Template", { 'project_type': frm.doc.project_type }, 'name', (r) => {
+            frm.set_value('project_template', r.name);
+        });
     }
 });
 
