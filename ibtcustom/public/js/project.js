@@ -6,6 +6,14 @@ cur_frm.fields_dict.project_type.get_query = function(doc) {
     };
 };
 
+frappe.ui.form.on("Project", {
+    project_type: function (frm) {
+        frappe.db.get_value("Project Template",{'project_type': frm.doc.project_type}, 'name', (r) => {
+            frm.set_value('project_template', r.name);
+        });
+    }
+});
+
 frappe.ui.form.on("Project Task", {
     before_project_tasks_remove: function (frm, cdt, cdn) {
         let d = locals[cdt][cdn]
@@ -19,4 +27,4 @@ frappe.ui.form.on("Project Task", {
            	
         }
     }
-})
+});
