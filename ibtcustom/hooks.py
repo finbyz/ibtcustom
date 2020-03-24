@@ -182,6 +182,9 @@ doc_events = {
 	},
 	"Compensatory Leave Request": {
 		"before_validate": "ibtcustom.api.compensatory_leave_before_validate"
+	},
+	"User":{
+		"before_save": "ibtcustom.api.user_before_save"
 	}
 }
 

@@ -1352,3 +1352,33 @@ def override_validate_holidays(self):
 
 def override_validate_attendance(self):
 	pass
+
+def user_before_save(self, method):
+	create_user_perm(self)
+
+def create_user_perm(self):
+	role_restriction_list = []
+	role_list = frappe.get_roles(self.name)
+	for role in role_list:
+		for_value = ''
+		if frappe.db.exists("Role Restriction",{'role':role}):
+			for row in frappe.get_list("Role Restriction",{'role':role}):
+				doc = frappe.get_doc("Role Restriction",row.name)
+				if doc.allow == "Employee":
+					for_value =  frappe.db.get_value("Employee",{'user_id': self.name}, 'name')
+					if not for_value:
+						frappe.throw("Create Employee for the user <b>{}</b>".format(self.name))
+				if doc.allow == "User":
+					for_value = self.name
+				user_perm = frappe.new_doc("User Permission")
+				user_perm.user = self.name
+				user_perm.allow = doc.allow
+				user_perm.for_value = for_value or doc.for_value
+				user_perm.is_default = doc.is_default
+				user_perm.apply_to_all_doctypes = doc.apply_to_all_doctypes
+				user_perm.applicable_for = doc.applicable_for
+
+				try:
+					user_perm.save()
+				except:
+					pass

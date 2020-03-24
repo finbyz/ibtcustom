@@ -1,0 +1,100 @@
+{
+ "allow_import": 1,
+ "creation": "2020-03-23 15:03:30.443266",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "role",
+  "allow",
+  "column_break_3",
+  "for_value",
+  "is_default",
+  "advanced_control_section",
+  "apply_to_all_doctypes",
+  "applicable_for"
+ ],
+ "fields": [
+  {
+   "fieldname": "role",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Role",
+   "options": "Role",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "allow",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Allow",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: !in_list([\"Employee\", \"User\"], doc.allow)",
+   "fieldname": "for_value",
+   "fieldtype": "Dynamic Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "For Value",
+   "options": "allow"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "label": "Is Default"
+  },
+  {
+   "fieldname": "advanced_control_section",
+   "fieldtype": "Section Break",
+   "label": "Advanced Control"
+  },
+  {
+   "default": "1",
+   "fieldname": "apply_to_all_doctypes",
+   "fieldtype": "Check",
+   "label": "Apply To All Document Types"
+  },
+  {
+   "depends_on": "eval:!doc.apply_to_all_doctypes",
+   "fieldname": "applicable_for",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Applicable For",
+   "options": "DocType"
+  }
+ ],
+ "modified": "2020-03-24 10:39:58.463994",
+ "modified_by": "Administrator",
+ "module": "IBTCustom",
+ "name": "Role Restriction",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "role",
+ "track_changes": 1
+}
