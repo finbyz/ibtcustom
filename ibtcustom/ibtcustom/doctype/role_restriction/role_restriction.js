@@ -11,11 +11,11 @@ frappe.ui.form.on('Role Restriction', {
 		}
 	},
 	allow: function (frm) {
-		if (frm.doc.allow != "Employee" || frm.doc.allow != "User"){
-			cur_frm.set_df_property("for_value", "reqd", 1);
+		if (frm.doc.allow == "Employee" || frm.doc.allow == "User"){
+			cur_frm.set_df_property("for_value", "reqd", 0);
 		}
 		else {
-			cur_frm.set_df_property("for_value", "reqd", 0);
+			cur_frm.set_df_property("for_value", "reqd", 1);
 		}
 	}
 });
