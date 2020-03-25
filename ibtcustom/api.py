@@ -1392,22 +1392,23 @@ def create_user_perm(self):
 					pass
 				
 def allow_module_as_per_role(self):
-	role_list = [r.role for r in self.roles]
-	allow_modules = []
-	all_modules = frappe.get_list("Module Def")
-	my_list = [{'name': 'Help'},{'name': 'Users and Permissions'},{'name': 'Leaderboard'},{'name': 'Getting Started'},{'name': 'Settings'},{'name': 'Customization'},{'name': 'dashboard'},{'name': 'Marketplace'}]
-	all_modules.extend(my_list)
-	for role in role_list:
-		if frappe.db.exists("Allow Module",{'role':role}):
-			doc =frappe.get_doc("Allow Module",{'role':role})
-			for row in doc.modules:
-				allow_modules.append(row.module)
-	allow_modules = set(allow_modules)
-	self.block_modules = []
-	for row in all_modules:
-		if row.get('name'):
-			if row.get('name') not in allow_modules:
-				self.append("block_modules", {
-					'module': row.get('name')
-				})
+	if self.name != "Administrator":
+		role_list = [r.role for r in self.roles]
+		allow_modules = []
+		all_modules = frappe.get_list("Module Def")
+		my_list = [{'name': 'Help'},{'name': 'Users and Permissions'},{'name': 'Leaderboard'},{'name': 'Getting Started'},{'name': 'Settings'},{'name': 'Customization'},{'name': 'dashboard'},{'name': 'Marketplace'}]
+		all_modules.extend(my_list)
+		for role in role_list:
+			if frappe.db.exists("Allow Module",{'role':role}):
+				doc =frappe.get_doc("Allow Module",{'role':role})
+				for row in doc.modules:
+					allow_modules.append(row.module)
+		allow_modules = set(allow_modules)
+		self.block_modules = []
+		for row in all_modules:
+			if row.get('name'):
+				if row.get('name') not in allow_modules:
+					self.append("block_modules", {
+						'module': row.get('name')
+					})
 	
