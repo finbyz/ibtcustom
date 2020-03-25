@@ -1,0 +1,29 @@
+{
+ "creation": "2020-03-25 10:40:09.747023",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "module"
+ ],
+ "fields": [
+  {
+   "fieldname": "module",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Module",
+   "options": "Module Def"
+  }
+ ],
+ "istable": 1,
+ "modified": "2020-03-25 10:40:09.747023",
+ "modified_by": "Administrator",
+ "module": "IBTCustom",
+ "name": "Modules",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

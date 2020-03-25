@@ -184,7 +184,8 @@ doc_events = {
 		"before_validate": "ibtcustom.api.compensatory_leave_before_validate"
 	},
 	"User":{
-		"before_save": "ibtcustom.api.user_before_save"
+		"before_save": "ibtcustom.api.user_before_save",
+		"on_update": "ibtcustom.api.user_on_update"
 	}
 }
 
