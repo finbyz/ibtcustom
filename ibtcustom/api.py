@@ -1371,7 +1371,7 @@ def create_user_perm(self):
 		for role in role_list:
 			for_value = ''
 			if frappe.db.exists("Role Restriction",{'role':role}):
-				for row in frappe.get_all("Role Restriction",{'role':role}):
+				for row in frappe.get_list("Role Restriction",{'role':role},ignore_permissions=True):
 					doc = frappe.get_doc("Role Restriction",row.name)
 					if doc.allow == "Employee":
 						for_value =  frappe.db.get_value("Employee",{'user_id': self.name}, 'name')
@@ -1388,7 +1388,7 @@ def create_user_perm(self):
 					user_perm.applicable_for = doc.applicable_for
 
 					try:
-						user_perm.save()
+						user_perm.save(ignore_permissions=True)
 					except:
 						pass
 				
