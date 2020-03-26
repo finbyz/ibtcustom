@@ -1379,18 +1379,20 @@ def create_user_perm(self):
 							frappe.throw("Create Employee for the user <b>{}</b>".format(self.name))
 					if doc.allow == "User":
 						for_value = self.name
-					user_perm = frappe.new_doc("User Permission")
-					user_perm.user = self.name
-					user_perm.allow = doc.allow
-					user_perm.for_value = for_value or doc.for_value
-					user_perm.is_default = doc.is_default
-					user_perm.apply_to_all_doctypes = doc.apply_to_all_doctypes
-					user_perm.applicable_for = doc.applicable_for
+					
+					if not frappe.db.exists("User Permission", {'user': self.name, 'allow': doc.allow, 'for_value': for_value or doc.for_value, 'is_default': doc.is_default, 'applicable_for': doc.applicable_for, 'apply_to_all_doctypes': doc.apply_to_all_doctypes}):
+						user_perm = frappe.new_doc("User Permission")
+						user_perm.user = self.name
+						user_perm.allow = doc.allow
+						user_perm.for_value = for_value or doc.for_value
+						user_perm.is_default = doc.is_default
+						user_perm.apply_to_all_doctypes = doc.apply_to_all_doctypes
+						user_perm.applicable_for = doc.applicable_for
 
-					try:
-						user_perm.save(ignore_permissions=True)
-					except:
-						pass
+						try:
+							user_perm.save(ignore_permissions=True)
+						except:
+							pass
 				
 def allow_module_as_per_role(self):
 	if self.name != "Administrator" or self.name != "Guest":
