@@ -1354,7 +1354,7 @@ def override_validate_attendance(self):
 	pass
 
 def user_before_save(self, method):
-	#create_user_perm(self)
+	create_user_perm(self)
 	allow_module_as_per_role(self)
 
 def user_before_validate(self, method):
@@ -1371,7 +1371,7 @@ def create_user_perm(self):
 		for role in role_list:
 			for_value = ''
 			if frappe.db.exists("Role Restriction",{'role':role}):
-				for row in frappe.get_list("Role Restriction",{'role':role},ignore_permissions=True):
+				for row in frappe.get_all("Role Restriction",{'role':role}):
 					doc = frappe.get_doc("Role Restriction",row.name)
 					if doc.allow == "Employee":
 						for_value =  frappe.db.get_value("Employee",{'user_id': self.name}, 'name')
