@@ -1354,9 +1354,8 @@ def override_validate_attendance(self):
 	pass
 
 def user_before_save(self, method):
-	pass
 	#create_user_perm(self)
-	#allow_module_as_per_role(self)
+	allow_module_as_per_role(self)
 
 def user_before_validate(self, method):
 	# allow_module_as_per_role(self)
