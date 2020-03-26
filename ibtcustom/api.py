@@ -1365,31 +1365,32 @@ def user_on_update(self, method):
 	pass
 
 def create_user_perm(self):
-	role_restriction_list = []
-	role_list = [r.role for r in self.roles]
-	for role in role_list:
-		for_value = ''
-		if frappe.db.exists("Role Restriction",{'role':role}):
-			for row in frappe.get_list("Role Restriction",{'role':role},ignore_permissions=True):
-				doc = frappe.get_doc("Role Restriction",row.name)
-				if doc.allow == "Employee":
-					for_value =  frappe.db.get_value("Employee",{'user_id': self.name}, 'name')
-					if not for_value:
-						frappe.throw("Create Employee for the user <b>{}</b>".format(self.name))
-				if doc.allow == "User":
-					for_value = self.name
-				user_perm = frappe.new_doc("User Permission")
-				user_perm.user = self.name
-				user_perm.allow = doc.allow
-				user_perm.for_value = for_value or doc.for_value
-				user_perm.is_default = doc.is_default
-				user_perm.apply_to_all_doctypes = doc.apply_to_all_doctypes
-				user_perm.applicable_for = doc.applicable_for
+	if self.name != "Administrator" or self.name != "Guest":
+		role_restriction_list = []
+		role_list = [r.role for r in self.roles]
+		for role in role_list:
+			for_value = ''
+			if frappe.db.exists("Role Restriction",{'role':role}):
+				for row in frappe.get_list("Role Restriction",{'role':role},ignore_permissions=True):
+					doc = frappe.get_doc("Role Restriction",row.name)
+					if doc.allow == "Employee":
+						for_value =  frappe.db.get_value("Employee",{'user_id': self.name}, 'name')
+						if not for_value:
+							frappe.throw("Create Employee for the user <b>{}</b>".format(self.name))
+					if doc.allow == "User":
+						for_value = self.name
+					user_perm = frappe.new_doc("User Permission")
+					user_perm.user = self.name
+					user_perm.allow = doc.allow
+					user_perm.for_value = for_value or doc.for_value
+					user_perm.is_default = doc.is_default
+					user_perm.apply_to_all_doctypes = doc.apply_to_all_doctypes
+					user_perm.applicable_for = doc.applicable_for
 
-				try:
-					user_perm.save()
-				except:
-					pass
+					try:
+						user_perm.save()
+					except:
+						pass
 				
 def allow_module_as_per_role(self):
 	if self.name != "Administrator" or self.name != "Guest":
