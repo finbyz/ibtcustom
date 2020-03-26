@@ -1392,7 +1392,7 @@ def create_user_perm(self):
 					pass
 				
 def allow_module_as_per_role(self):
-	if self.name != "Administrator":
+	if self.name != "Administrator" or self.name != "Guest":
 		role_list = [r.role for r in self.roles]
 		allow_modules = []
 		all_modules = frappe.get_list("Module Def",ignore_permissions= True)
