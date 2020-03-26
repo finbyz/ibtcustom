@@ -32,6 +32,6 @@ class RoleRestriction(Document):
 					user_perm.applicable_for = self.applicable_for
 
 					try:
-						user_perm.save()
+						user_perm.save(ignore_permissions=True)
 					except:
 						pass
