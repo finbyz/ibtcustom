@@ -1395,7 +1395,7 @@ def allow_module_as_per_role(self):
 	if self.name != "Administrator":
 		role_list = [r.role for r in self.roles]
 		allow_modules = []
-		all_modules = frappe.get_list("Module Def")
+		all_modules = frappe.get_list("Module Def",ignore_permissions= True)
 		my_list = [{'name': 'Help'},{'name': 'Users and Permissions'},{'name': 'Leaderboard'},{'name': 'Getting Started'},{'name': 'Settings'},{'name': 'Customization'},{'name': 'dashboard'},{'name': 'Marketplace'}]
 		all_modules.extend(my_list)
 		for role in role_list:
