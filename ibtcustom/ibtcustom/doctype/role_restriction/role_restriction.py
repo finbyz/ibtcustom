@@ -10,7 +10,7 @@ class RoleRestriction(Document):
 	
 	def before_save(self):
 		for_value = ''
-		user_list = frappe.get_list("User",{'enabled': 1, 'name': ['NOT IN', ['administrator','guest']]})
+		user_list = frappe.get_list("User",{'enabled': 1, 'name': ['NOT IN', ['administrator','guest']]},ignore_permissions=True)
 		for user in user_list:
 			user_role_list = frappe.get_roles(user.name)
 			
