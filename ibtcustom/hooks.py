@@ -41,7 +41,8 @@ app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 
 doctype_js = {
 	"Project" : "public/js/project.js",
-	"Compensatory Leave Request": "public/js/doctype_js/compensatory_leave_request.js"
+	"Compensatory Leave Request": "public/js/doctype_js/compensatory_leave_request.js",
+	"Leave Allocation": "public/js/doctype_js/leave_allocation.js"
 }
 
 # Home Pages
@@ -182,6 +183,9 @@ doc_events = {
 	},
 	"Compensatory Leave Request": {
 		"before_validate": "ibtcustom.api.compensatory_leave_before_validate"
+	},
+	"Leave Allocation": {
+		"before_validate":  "ibtcustom.api.leave_allocation_before_validate"
 	},
 	"User":{
 		"before_save": "ibtcustom.api.user_before_save",

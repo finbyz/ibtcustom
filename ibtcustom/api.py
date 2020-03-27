@@ -1353,6 +1353,13 @@ def override_validate_holidays(self):
 def override_validate_attendance(self):
 	pass
 
+def leave_allocation_before_validate(self,method):
+	from erpnext.hr.doctype.leave_allocation.leave_allocation import LeaveAllocation
+	LeaveAllocation.validate_lwp = override_validate_lwp
+
+def override_validate_lwp(self):
+	pass
+
 def user_before_save(self, method):
 	create_user_perm(self)
 	allow_module_as_per_role(self)
