@@ -5,12 +5,20 @@ from frappe import _
 def get_data():
 	return [
 		{
-			"label": _("Meeting"),
+			"label": _("Other"),
 			"items": [
 				{
 					"type": "doctype",
 					"name": "Meeting",
 				},
+                {
+					"type": "doctype",
+					"name": "Allow Module",
+				},
+				{
+					"type": "doctype",
+					"name": "Role Restriction",
+				}
 			]
 		},
 		{
@@ -49,18 +57,5 @@ def get_data():
 					"name": "Admin Issue",
 				},
 			]
-		},
-		{
-			"label": _("Permission"),
-			"items": [
-				{
-					"type": "doctype",
-					"name": "Allow Module",
-				},
-				{
-					"type": "doctype",
-					"name": "Role Restriction",
-				}
-			]
-		},
+		}
 	]
