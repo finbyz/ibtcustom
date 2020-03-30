@@ -13,12 +13,11 @@ class RoleRestriction(Document):
 		user_list = frappe.get_list("User",{'enabled': 1, 'name': ['NOT IN', ['administrator','guest']]},ignore_permissions=True)
 		for user in user_list:
 			user_role_list = frappe.get_roles(user.name)
-			
 			if self.role in user_role_list:
 				if self.allow == "Employee":
 					for_value =  frappe.db.get_value("Employee",{'user_id': user.name}, 'name')
-				if not for_value:
-					frappe.throw("Create Employee for the user <b>{}</b>".format(user.name))
+					if not for_value:
+						frappe.throw("Create Employee for the user <b>{}</b>".format(user.name))
 				if self.allow == "User":
 					for_value = user.name
 				if not frappe.db.exists("User Permission", {'user': user.name, 'allow': self.allow, 'for_value': for_value or self.for_value, 'is_default': self.is_default, 'applicable_for': self.applicable_for, 'apply_to_all_doctypes': self.apply_to_all_doctypes}):
