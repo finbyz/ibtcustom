@@ -198,7 +198,7 @@ scheduler_events = {
 		"ibtcustom.api.change_email_status"
 	],
 	"daily": [
-		"ibtcustom.api.employee_birthday_mails",
+		"ibtcustom.api.send_employee_birthday_mails",
 		"ibtcustom.api.employee_anniversary_mails",
 		"ibtcustom.api.send_task_report_mail",
 		"ibtcustom.api.make_todo",

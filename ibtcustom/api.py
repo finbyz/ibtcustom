@@ -1372,7 +1372,7 @@ def user_on_update(self, method):
 	pass
 
 def create_user_perm(self):
-	if self.name != "Administrator" or self.name != "Guest":
+	if (self.name != "Administrator" or self.name != "Guest") and self.create_user_permission:
 		role_restriction_list = []
 		role_list = [r.role for r in self.roles]
 		for role in role_list:
@@ -1400,6 +1400,7 @@ def create_user_perm(self):
 							user_perm.save(ignore_permissions=True)
 						except:
 							pass
+		self.create_user_permission = 0
 				
 def allow_module_as_per_role(self):
 	if self.name != "Administrator" or self.name != "Guest":
