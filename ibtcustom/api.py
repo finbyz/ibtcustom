@@ -1400,6 +1400,12 @@ def create_user_perm(self):
 							user_perm.save(ignore_permissions=True)
 						except:
 							pass
+
+			if role in ['HR User (KSF)', 'HR Manager (KSF)']:
+				perm_list = frappe.get_list("User Permission",{'user':self.name,'allow':'Employee'},ignore_permissions=True)
+				for permission in perm_list:
+					perm_doc = frappe.get_doc("User Permission",permission.name)
+					frappe.delete_doc("User Permission", perm_doc.name)
 				
 def allow_module_as_per_role(self):
 	if self.name != "Administrator" or self.name != "Guest":
