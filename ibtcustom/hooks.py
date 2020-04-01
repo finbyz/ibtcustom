@@ -42,7 +42,9 @@ app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 doctype_js = {
 	"Project" : "public/js/project.js",
 	"Compensatory Leave Request": "public/js/doctype_js/compensatory_leave_request.js",
-	"Leave Allocation": "public/js/doctype_js/leave_allocation.js"
+	"Leave Allocation": "public/js/doctype_js/leave_allocation.js",
+	"Leave Application": "public/js/doctype_js/leave_application.js",
+	"Leave Type": "public/js/doctype_js/leave_type.js"
 }
 
 # Home Pages

@@ -6,7 +6,8 @@ frappe.ui.form.on("Leave Allocation", {
 				filters: [
 				    // 'is_lwp': 0,
 				   // 'name': "Annual Leave"
-				  ['is_lwp', 'in',['0','1'] ]
+					['is_lwp', 'in', ['0', '1']],
+					['status','=','Enable']
 				    
 				]
 			}
