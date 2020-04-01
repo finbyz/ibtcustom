@@ -14,7 +14,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Role",
-   "options": "Role"
+   "options": "Role",
+   "unique": 1
   },
   {
    "fieldname": "modules",
@@ -23,7 +24,7 @@
    "options": "Modules"
   }
  ],
- "modified": "2020-03-25 10:45:19.687145",
+ "modified": "2020-03-25 17:12:59.688587",
  "modified_by": "Administrator",
  "module": "IBTCustom",
  "name": "Allow Module",
