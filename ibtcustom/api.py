@@ -10,6 +10,7 @@ from frappe.email.doctype.auto_email_report.auto_email_report import AutoEmailRe
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import (flt, now, nowtime, get_time, today, get_datetime, add_days)
 from frappe.core.doctype.communication.email import make
+from erpnext.projects.doctype.project.project import Project
 
 
 @frappe.whitelist()
@@ -160,10 +161,14 @@ def cancel_op(self, method):
 		if grand_total == 0.0:
 			op.db_set('status', "Open")
 
-def project_validate(self,method):
+def project_before_validate(self,method):
 	sync_tasks(self)
 	# self.project_tasks = []
 	load_tasks(self)
+
+def project_validate(self,method):
+	#Project.update_project = override_update_project
+	upadte_customer(self)
 
 def project_onload(self,method):
 	pass
@@ -171,13 +176,25 @@ def project_onload(self,method):
 	# 	load_tasks(self)
 	
 def project_on_update(self,method):
-	delete_task(self)
-
-
+	upadte_customer(self)
+	#delete_task(self)
 
 @frappe.whitelist()
 def project_before_save(self, method):
-	set_progress(self)
+	upadte_customer(self)
+	#set_progress(self)
+
+def override_update_project(self):
+	Project.update_percent_complete(self)
+	upadte_customer(self)
+	Project.update_costing(self)
+	Project.db_update(self)
+
+def upadte_customer(self):
+	if self.customer and self.percent_complete == 100:
+		frappe.db.set_value('Customer',self.customer,'status','Close')
+	else:
+		frappe.db.set_value('Customer',self.customer,'status','Open')
 
 #Override class method of Copy from Temlate for assigned to field
 def copy_from_template(self):
@@ -962,6 +979,16 @@ def issue_before_save(self, method):
 	if self.engineer_group:
 		set_due_date(self)
 
+	if self.status == 'Hold':
+		user = frappe.get_doc("User",frappe.session.user)
+		role_list = [r.role for r in user.roles]
+		not_allowed_role = ['Support Team – IT Outsourcing, Part Time','Support Team – Annual Maintenance Contract','Project User – IT Infrastructure']
+	
+		for role in not_allowed_role:
+			if role in role_list :
+				frappe.throw(_('Not allowed to change status on Hold'))
+
+
 def set_due_date(self):
 	due_date = getdate(self.opening_date)
 	due_days = 0
@@ -1384,7 +1411,7 @@ def create_user_perm(self):
 			perm_list = frappe.get_list("User Permission",{'user':self.name},ignore_permissions=True)
 			for permission in perm_list:
 				perm_doc = frappe.get_doc("User Permission",permission.name)
-				frappe.delete_doc("User Permission", perm_doc.name)
+				frappe.delete_doc("User Permission", perm_doc.name,ignore_permissions=True)
 
 			for role in role_list:
 				for_value = ''
