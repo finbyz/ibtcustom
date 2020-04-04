@@ -13,7 +13,7 @@ frappe.ui.form.on("Project", {
         });
     },
     before_save: function (frm) {
-        if (frm.doc.sales_order && !frm.doc.project_type) {
+        if (frm.doc.sales_order && (!frm.doc.project_type || frm.doc.project_type == "External")) {
             frappe.db.get_value("Sales Order", frm.doc.sales_order, 'project_type', (r) => {
                 frm.set_value('project_type', r.project_type);
             });
