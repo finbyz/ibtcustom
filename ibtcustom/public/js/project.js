@@ -13,9 +13,9 @@ frappe.ui.form.on("Project", {
         });
     },
     before_save: function (frm) {
-        if (frm.doc.sales_order) {
-            frappe.db.get_value("Sales Order", frm.doc.sales_order, 'quotation_segment', (r) => {
-                frm.set_value('project_type', r.quotation_segment);
+        if (frm.doc.sales_order && !frm.doc.project_type) {
+            frappe.db.get_value("Sales Order", frm.doc.sales_order, 'project_type', (r) => {
+                frm.set_value('project_type', r.project_type);
             });
         }
         if (frm.doc.__islocal) {
