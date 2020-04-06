@@ -136,9 +136,9 @@ doctype_js = {
 # 	"frappe.desk.doctype.event.event.get_events": "ibtcustom.event.get_events"
 # }
 
-override_whitelisted_methods = {
-	"frappe.utils.print_format.download_pdf": "ibtcustom.print_format.download_pdf",
-}
+# override_whitelisted_methods = {
+# 	"frappe.utils.print_format.download_pdf": "ibtcustom.print_format.download_pdf",
+# }
 
 email_append_to = ["HR Issue", "Admin Issue"]
 
@@ -223,12 +223,13 @@ scheduler_events = {
 }
 
 doctype_list_js = {
-        "Opportunity": "/public/js/controllers/list/opportunity_list.js"
+	"Opportunity": "/public/js/controllers/list/opportunity_list.js"
 }
 
 #Override nonwhiteliested Methods
-# Override Project method copy from Template
+#Override Project method copy from Template
+import erpnext
 from erpnext.projects.doctype.project.project import Project
-from ibtcustom.api import copy_from_template,override_update_project
+from ibtcustom.axira import copy_from_template,override_update_project
 Project.copy_from_template = copy_from_template
 Project.update_project = override_update_project

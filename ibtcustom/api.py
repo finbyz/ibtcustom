@@ -192,9 +192,9 @@ def override_update_project(self):
 
 def upadte_customer(self):
 	if self.customer and self.percent_complete == 100:
-		frappe.db.set_value('Customer',self.customer,'status','Close')
+		frappe.db.set_value('Customer',self.customer,'customer_status','Close')
 	else:
-		frappe.db.set_value('Customer',self.customer,'status','Open')
+		frappe.db.set_value('Customer',self.customer,'customer_status','Open')
 
 #Override class method of Copy from Temlate for assigned to field
 def copy_from_template(self):
