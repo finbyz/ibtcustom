@@ -2,6 +2,7 @@
 from erpnext.projects.doctype.project.project import Project
 import frappe
 from frappe import _, sendmail
+from frappe.utils import today
 
 def override_update_project(self):
 	Project.update_percent_complete(self)
