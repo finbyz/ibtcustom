@@ -1,7 +1,7 @@
 cur_frm.fields_dict.project_type.get_query = function(doc) {
 	return {
         "filters": [
-            ["project_type", "in", ["IT Hardware / Software", "IT Infrastructure", "Cloud Computing", "Axira Business Solutions", "Annual Maintenance Contract", "IT Outsourcing- Part-time", "IT Outsourcing- Full-time", "One Time  Support", "Call Center Outsourcing","Business Process Outsourcing"]]
+            ["project_type", "in", ["IT Hardware / Software", "IT Infrastructure", "Cloud Computing", "Axira Business Solutions", "Annual Maintenance Contract", "IT Outsourcing - Part Time", "IT Outsourcing- Full-time", "One Time  Support", "Call Center Outsourcing","Business Process Outsourcing"]]
         ]
     };
 };
