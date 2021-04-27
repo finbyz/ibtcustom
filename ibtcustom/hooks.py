@@ -22,9 +22,10 @@ website_context = {
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/ibtcustom/css/ibtcustom.css"
-app_include_css = "/assets/ibtcustom/css/ibtcustom.min.css"
 # app_include_js = "/assets/ibtcustom/js/ibtcustom.js"
-app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
+
+app_include_css = "/assets/ibtcustom/css/ibtcustom.min.css"
+#app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/ibtcustom/css/ibtcustom.css"
@@ -228,6 +229,8 @@ doctype_list_js = {
 
 #Override nonwhiteliested Methods
 #Override Project method copy from Template
+
+
 import erpnext
 from erpnext.projects.doctype.project.project import Project
 from ibtcustom.axira import copy_from_template,override_update_project
