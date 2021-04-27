@@ -14,7 +14,7 @@ app_license = "GPL 3"
 
 # Includes in <head>
 # ------------------
-app_logo_url = '/assets/erpnext/images/axiraerp-icon.svg'
+#app_logo_url = '/assets/erpnext/images/axiraerp-icon.svg'
 
 website_context = {
 	"splash_image": "/files/axira-splash.png"
