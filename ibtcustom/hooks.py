@@ -45,7 +45,8 @@ doctype_js = {
 	"Compensatory Leave Request": "public/js/doctype_js/compensatory_leave_request.js",
 	"Leave Allocation": "public/js/doctype_js/leave_allocation.js",
 	"Leave Application": "public/js/doctype_js/leave_application.js",
-	"Leave Type": "public/js/doctype_js/leave_type.js"
+	"Leave Type": "public/js/doctype_js/leave_type.js",
+	"Expense Claim": "public/js/doctype_js/expense_claim.js",
 }
 
 # Home Pages
