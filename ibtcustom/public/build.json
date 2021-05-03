@@ -1,0 +1,5 @@
+{
+	"js/ibt.min.js": [
+		"public/js/ibtcustom/ui/toolbar/navbar.html"
+    ]
+}

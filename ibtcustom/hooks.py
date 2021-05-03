@@ -27,6 +27,10 @@ website_context = {
 app_include_css = "/assets/ibtcustom/css/ibtcustom.min.css"
 #app_include_js = "/assets/ibtcustom/js/ibtcustom.min.js"
 
+app_include_js = [
+	"assets/js/ibt.min.js" 
+	#"assets/finbyzerp/js/frappe/ui/page.js"
+]
 # include js, css files in header of web template
 # web_include_css = "/assets/ibtcustom/css/ibtcustom.css"
 # web_include_js = "/assets/ibtcustom/js/ibtcustom.js"
