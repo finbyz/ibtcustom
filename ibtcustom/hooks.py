@@ -236,7 +236,7 @@ doctype_list_js = {
 #Override Project method copy from Template
 
 
-import erpnext
+#import erpnext
 from erpnext.projects.doctype.project.project import Project
 from ibtcustom.axira import copy_from_template,override_update_project
 Project.copy_from_template = copy_from_template
