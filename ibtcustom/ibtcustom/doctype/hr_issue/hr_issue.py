@@ -13,8 +13,8 @@ sender_field = "raised_by"
 
 class HRIssue(Document):
 	def validate(self):
-		# if not self.raised_by:
-		# 	self.raised_by = frappe.session.user
+		if not self.raised_by:
+			self.raised_by = frappe.session.user
 		self.update_status()
 	
 	def update_status(self):

@@ -200,6 +200,9 @@ doc_events = {
 	"User":{
 		"before_save": "ibtcustom.api.user_before_save",
 		"on_update": "ibtcustom.api.user_on_update"
+	},
+	"Loan": {
+		"validate":  "ibtcustom.api.loan_validate",
 	}
 }
 

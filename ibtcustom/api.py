@@ -13,6 +13,10 @@ from frappe.core.doctype.communication.email import make
 from erpnext.projects.doctype.project.project import Project
 
 
+def loan_validate(self,method):
+	if self.applicant_type == "Employee":
+		self.employee = self.applicant
+
 @frappe.whitelist()
 def override_validate(self, method):
 	AutoEmailReport.validate = validate
