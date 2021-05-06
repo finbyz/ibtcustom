@@ -53,6 +53,10 @@ doctype_js = {
 	"Expense Claim": "public/js/doctype_js/expense_claim.js",
 }
 
+from frappe.model import sync 
+from ibtcustom.api import get_doc_files
+sync.get_doc_files = get_doc_files
+
 # Home Pages
 # ----------
 

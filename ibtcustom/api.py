@@ -1470,3 +1470,23 @@ def allow_module_as_per_role(self):
 						'module': row.get('name')
 					})
 	
+import os
+
+def get_doc_files(files, start_path):
+	"""walk and sync all doctypes and pages"""
+
+	# load in sequence - warning for devs
+	document_types = ['doctype', 'page', 'report', 'dashboard_chart_source', 'print_format',
+		'website_theme', 'web_form', 'web_template', 'notification', 'print_style',
+		'data_migration_mapping', 'data_migration_plan',
+		'onboarding_step', 'module_onboarding']
+
+	for doctype in document_types:
+		doctype_path = os.path.join(start_path, doctype)
+		if os.path.exists(doctype_path):
+			for docname in os.listdir(doctype_path):
+				if os.path.isdir(os.path.join(doctype_path, docname)):
+					doc_path = os.path.join(doctype_path, docname, docname) + ".json"
+					if os.path.exists(doc_path):
+						if not doc_path in files:
+							files.append(doc_path)
