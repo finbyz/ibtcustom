@@ -978,6 +978,18 @@ def opp_before_save(self, method):
 		if self.status == 'Lost':
 			frappe.db.set_value("Lead", self.lead, 'status', "Lost")	
 
+def issue_validate(self,method):
+	set_status(self)
+
+def task_validate(self,method):
+	set_status(self)
+	
+def set_status(self):
+	if self.doctype == "Issue":
+		self.issue_status = self.status
+	if self.doctype == "Task":
+		self.task_status = self.status
+
 @frappe.whitelist()
 def issue_before_save(self, method):
 	if self.engineer_group:
@@ -1429,7 +1441,7 @@ def create_user_perm(self):
 						if doc.allow == "User":
 							for_value = self.name
 						
-						if not frappe.db.exists("User Permission", {'user': self.name, 'allow': doc.allow, 'for_value': for_value or doc.for_value, 'is_default': doc.is_default, 'applicable_for': doc.applicable_for, 'apply_to_all_doctypes': doc.apply_to_all_doctypes}):
+						if not frappe.db.exists("User Permission", {'user': self.name, 'allow': doc.allow, 'for_value': for_value or doc.for_value, 'is_default': doc.is_default, 'applicable_for': doc.applicable_for, 'apply_to_all_doctypes': doc.apply_to_all_doctypes,"hide_descendants":doc.hide_descendants}):
 							user_perm = frappe.new_doc("User Permission")
 							user_perm.user = self.name
 							user_perm.allow = doc.allow
@@ -1437,6 +1449,7 @@ def create_user_perm(self):
 							user_perm.is_default = doc.is_default
 							user_perm.apply_to_all_doctypes = doc.apply_to_all_doctypes
 							user_perm.applicable_for = doc.applicable_for
+							user_perm.hide_descendants = doc.hide_descendants
 
 							try:
 								user_perm.save(ignore_permissions=True)

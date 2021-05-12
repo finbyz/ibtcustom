@@ -20,7 +20,7 @@ class RoleRestriction(Document):
 						frappe.throw("Create Employee for the user <b>{}</b>".format(user.name))
 				if self.allow == "User":
 					for_value = user.name
-				if not frappe.db.exists("User Permission", {'user': user.name, 'allow': self.allow, 'for_value': for_value or self.for_value, 'is_default': self.is_default, 'applicable_for': self.applicable_for, 'apply_to_all_doctypes': self.apply_to_all_doctypes}):
+				if not frappe.db.exists("User Permission", {'user': user.name, 'allow': self.allow, 'for_value': for_value or self.for_value, 'is_default': self.is_default, 'applicable_for': self.applicable_for, 'apply_to_all_doctypes': self.apply_to_all_doctypes,"hide_descendants": self.hide_descendants}):
 					
 					user_perm = frappe.new_doc("User Permission")
 					user_perm.user = user.name
@@ -29,7 +29,7 @@ class RoleRestriction(Document):
 					user_perm.is_default = self.is_default
 					user_perm.apply_to_all_doctypes = self.apply_to_all_doctypes
 					user_perm.applicable_for = self.applicable_for
-
+					user_perm.hide_descendants = self.hide_descendants
 					try:
 						user_perm.save(ignore_permissions=True)
 					except:

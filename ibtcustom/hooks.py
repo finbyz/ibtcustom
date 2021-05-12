@@ -193,7 +193,11 @@ doc_events = {
 		"after_cancel": "ibtcustom.api.po_on_cancel"
 	},
 	"Issue":{
+		"validate":"ibtcustom.api.issue_validate",
 		"before_save":"ibtcustom.api.issue_before_save"
+	},
+	"Task":{
+		"validate":"ibtcustom.api.task_validate",
 	},
 	"Compensatory Leave Request": {
 		"before_validate": "ibtcustom.api.compensatory_leave_before_validate"

@@ -1,10 +1,12 @@
 {
+ "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
  "autoname": "naming_series:",
  "creation": "2018-05-08 08:53:52.363038",
  "doctype": "DocType",
  "document_type": "Setup",
+ "email_append_to": 1,
  "engine": "InnoDB",
  "field_order": [
   "subject_section",
@@ -120,8 +122,7 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Employee",
-   "options": "Employee",
-   "read_only": 1
+   "options": "Employee"
   },
   {
    "fetch_from": "employee.employee_name",
@@ -156,6 +157,7 @@
   {
    "fieldname": "reporting_manager",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Reporting Manager",
    "options": "Employee",
    "read_only": 1
@@ -270,7 +272,9 @@
   }
  ],
  "icon": "fa fa-ticket",
- "modified": "2020-03-27 15:15:42.452625",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-05-05 13:06:02.496513",
  "modified_by": "Administrator",
  "module": "IBTCustom",
  "name": "HR Issue",
@@ -282,7 +286,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "HR Manager",
+   "role": "HR Manager (KSF)",
    "share": 1,
    "write": 1
   },
@@ -311,8 +315,10 @@
   }
  ],
  "search_fields": "status,subject,raised_by",
+ "sender_field": "raised_by",
  "sort_field": "modified",
  "sort_order": "ASC",
+ "subject_field": "subject",
  "title_field": "subject",
  "track_changes": 1,
  "track_seen": 1
