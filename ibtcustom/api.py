@@ -173,6 +173,7 @@ def project_before_validate(self,method):
 def project_validate(self,method):
 	#Project.update_project = override_update_project
 	upadte_customer(self)
+	set_status(self)
 
 def project_onload(self,method):
 	pass
@@ -989,6 +990,8 @@ def set_status(self):
 		self.issue_status = self.status
 	if self.doctype == "Task":
 		self.task_status = self.status
+	if self.doctype == "Project":
+		self.project_status = self.status
 
 @frappe.whitelist()
 def issue_before_save(self, method):
