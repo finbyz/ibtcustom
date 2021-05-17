@@ -985,6 +985,9 @@ def issue_validate(self,method):
 def task_validate(self,method):
 	set_status(self)
 	
+def so_validate(self,method):
+	set_status(self)
+	
 def set_status(self):
 	if self.doctype == "Issue":
 		self.issue_status = self.status
@@ -992,6 +995,8 @@ def set_status(self):
 		self.task_status = self.status
 	if self.doctype == "Project":
 		self.project_status = self.status
+	if self.doctype == "Sales Order":
+		self.sales_order_status = self.status
 
 @frappe.whitelist()
 def issue_before_save(self, method):

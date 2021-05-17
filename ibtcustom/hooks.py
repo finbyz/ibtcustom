@@ -155,6 +155,7 @@ email_append_to = ["HR Issue", "Admin Issue"]
 
 doc_events = {
 	"Sales Order": {
+		"validate": "ibtcustom.api.so_validate",
 		"on_submit": "ibtcustom.api.so_on_submit",
 		"on_cancel": "ibtcustom.api.so_on_cancel"	
 	},
