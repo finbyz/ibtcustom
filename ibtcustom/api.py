@@ -1511,3 +1511,14 @@ def get_doc_files(files, start_path):
 					if os.path.exists(doc_path):
 						if not doc_path in files:
 							files.append(doc_path)
+
+def comm_before_validate(self,method):
+	if self.recipients and self.recipients.find(""", IBT" <""") != -1:
+		self.recipients = self.recipients.replace(""", IBT" <""",""" IBT" <""")
+
+	if self.cc and self.cc.find(""", IBT" <""") != -1:
+		self.cc = self.cc.replace(""", IBT" <""",""" IBT" <""")
+
+	if self.bcc and self.bcc.find(""", IBT" <""") != -1:
+		self.bcc = self.bcc.replace(""", IBT" <""",""" IBT" <""")
+
